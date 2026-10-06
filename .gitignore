@@ -4,6 +4,10 @@
 !/.gitignore
 !/.gitattributes
 !/README.md
+!/README.zh-TW.md
+!/README.en.md
+!/README.ja.md
+!/README.ko.md
 !/MoonlitCourtyard.uproject
 !/Config/
 !/Source/
