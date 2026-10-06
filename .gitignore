@@ -1,0 +1,16 @@
+# Publish current game code and configuration only.
+# Local handoff notes, drafts, production tools, assets and recordings stay local.
+/*
+!/.gitignore
+!/.gitattributes
+!/README.md
+!/MoonlitCourtyard.uproject
+!/Config/
+!/Source/
+/Source/*
+!/Source/MoonlitCourtyard/
+!/Source/CourtyardAnimationEditor/
+!/Source/MoonlitCourtyard.Target.cs
+!/Source/MoonlitCourtyardEditor.Target.cs
+__pycache__/
+*.pyc

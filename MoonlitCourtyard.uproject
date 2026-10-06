@@ -1,0 +1,36 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "5.7",
+  "Category": "Games",
+  "Description": "Moonlit courtyard. Character import validation in progress.",
+  "Modules": [
+    {
+      "Name": "MoonlitCourtyard",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    },
+    {
+      "Name": "CourtyardAnimationEditor",
+      "Type": "UncookedOnly",
+      "LoadingPhase": "Default"
+    }
+  ],
+  "Plugins": [
+    {
+      "Name": "PythonScriptPlugin",
+      "Enabled": true
+    },
+    {
+      "Name": "EditorScriptingUtilities",
+      "Enabled": true
+    },
+    {
+      "Name": "AnimationData",
+      "Enabled": false
+    },
+    {
+      "Name": "ControlRig",
+      "Enabled": true
+    }
+  ]
+}
