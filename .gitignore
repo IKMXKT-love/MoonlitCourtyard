@@ -19,3 +19,14 @@
 !/Source/MoonlitCourtyardEditor.Target.cs
 __pycache__/
 *.pyc
+
+# Public README screenshots only; production media remains private.
+!/assets/
+/assets/*
+!/assets/readme/
+/assets/readme/*
+!/assets/readme/courtyard.webp
+!/assets/readme/companion.webp
+!/assets/readme/manor.webp
+!/assets/readme/hearth.webp
+!/assets/readme/reading.webp

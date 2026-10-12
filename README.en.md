@@ -2,49 +2,107 @@
 
 [简体中文](README.md) · [繁體中文](README.zh-TW.md) · [English](README.en.md) · [日本語](README.ja.md) · [한국어](README.ko.md)
 
-A quiet fantasy manor where you can wander, sit, and share a moonlit evening.
+**Leave a little time for moonlight.**
 
-Pale pink cherry blossoms rest beneath a blue-violet sky, while warm golden light spills from the manor windows. Follow the flower paths toward the water, return indoors to rest, or sit beneath the blossoms and enjoy the view with Sakuraba Ema. There is no combat or quest pressure: the experience centers on a peaceful setting, gentle responses, and the feeling of sharing a place with someone.
+Enter a manor beneath a blue-violet sky. Wander along flower paths, return to the warmth indoors, or sit beneath the blossoms with Sakuraba Ema. There is no combat or quest pressure—just wind, water, and small moments of companionship.
 
-## The experience
+**[Download for Windows — free](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.49.1/MoonlitCourtyard-v0.49.1-Windows.zip)** · [Release notes](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.49.1)
 
-- **First-person exploration**: wander through the courtyard, terrace, and two-story manor to discover different views.
-- **A fantasy night sky**: stars, a celestial river, and otherworldly bodies, with slowly changing clouds and occasional meteors.
-- **Ema's daily life**: she walks, pauses, watches the scenery, and responds to your presence within the areas currently supported.
-- **Simple interactions**: approach her for responses, head pats, and smiles; sit at designated seats to enjoy the garden.
-- **Quiet soundscapes**: wind, water, and intermittent background music, which can be switched off.
-- **Adjustable settings**: display, volume, mouse, and key settings, plus a courtyard map.
+v0.49.1 · Windows 64-bit · About 669 MiB · Free
 
-## Basic controls
+![Ema smiles softly beside the warm entrance and stained-glass windows.](assets/readme/courtyard.webp)
 
-These are the default keys. Key bindings can be changed in Settings.
+The game interface is currently primarily Chinese. All images below are actual game captures.
+
+## From blossom shade to warm windows
+
+The flowering tree, water and manor remain connected by open views. Explore the garden, ground floor and upstairs, or find a place to linger.
+
+![Arched windows, pointed roofs and warm light beyond the garden.](assets/readme/manor.webp)
+
+*Arched windows, pointed roofs and warm light beyond the garden.*
+
+## Spend time with Ema
+
+Within supported areas, Ema walks, watches flowers, warms her hands near the fireplace and pauses by stained glass. Her responses depend on the current situation.
+
+![See her E-response smile from the player’s seat. Ema stands nearby; she is not seated.](assets/readme/companion.webp)
+
+*See her E-response smile from the player’s seat. Ema stands nearby; she is not seated.*
+
+> Approach, face Ema and wait for the interaction prompt. Some responses yield while she moves or performs another activity. Autonomous sitting and standing for Ema are not enabled.
+
+## A warm place to return to
+
+<table>
+<tr>
+<td width="50%">
+<img src="assets/readme/hearth.webp" alt="The fireplace and tea seating connect indoor resting spaces." width="100%">
+<p>The fireplace and tea seating connect indoor resting spaces.</p>
+</td>
+<td width="50%">
+<img src="assets/readme/reading.webp" alt="Explore the bookshelves and reading corner. Ema’s autonomous seated reading is still unfinished." width="100%">
+<p>Explore the bookshelves and reading corner. Ema’s autonomous seated reading is still unfinished.</p>
+</td>
+</tr>
+</table>
+
+## How to play
+
+### Movement and posture
 
 | Input | Action |
 |---|---|
-| W / A / S / D | Move |
-| Mouse | Look around |
-| Shift | Hold to move faster |
-| E | Interact with Ema when distance and state allow |
-| F | Sit down / stand up at designated seats |
-| M | Courtyard map |
-| Esc | Settings / back |
+| `W / A / S / D` | Move |
+| `Mouse` | Look around |
+| `Shift` | Hold to move faster |
+| `Space` | Jump |
+| `Ctrl` | Crouch / stand |
+| `C` | Prone / stand |
+| `X` | Lie on your back / stand |
 
-Follow the in-game interaction prompts. Some responses are temporarily unavailable while Ema is moving or completing another behavior.
+### Ema and the environment
 
-## Current version and downloads
+| Input | Action |
+|---|---|
+| `E` | Interact when distance and state allow |
+| `F` | Sit / stand at designated seats |
+| `G` | Pick / show / place a flower |
+| `R` | Open / close nearby doors |
 
-Public version: **v0.49.1 · Windows 64-bit courtyard preview**, based on version 49 with creator permission and attribution added.
+### Map and settings
 
-**Free to download, with no advertising, paid content, or donation prompts.** [Download the game ZIP](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.49.1/MoonlitCourtyard-v0.49.1-Windows.zip) · [Release notes and checksums](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.49.1)
+| Input | Action |
+|---|---|
+| `M` | Courtyard and floor maps |
+| `Esc` | Settings / back |
 
-Extract the entire ZIP into a folder, then double-click `StartGarden.cmd` or `MoonlitCourtyard.exe`. Do not extract only the executable. The Unreal Editor is not required. Start with the default medium graphics settings and adjust for your computer. The game interface is currently primarily Chinese; repository introductions are available in five texts.
+Default controls are shown; adjustable bindings follow the in-game settings. F requires a designated seat, R requires a nearby door, and standing from a low posture requires clearance.
 
-Recent changes include flowerbed, pond, fireplace and stained-glass visits; shared sky-watching while the player is seated; improved held-flower visibility; a merged bathroom, grouped furniture and sliding doors; entrance, dark-wall, fountain escape and wall-corner repairs. Additional controls: **G** pick/show/place a flower, **R** interact with doors, **Space** jump, **Ctrl** crouch, **C** prone, **X** lie on your back.
+## Your first visit
 
-This is an evolving preview. Ema mainly uses the garden and ground floor. Autonomous stair use, complete sitting/standing, seated reading and physical flower handoff/wearing are not enabled. Some motion and visual details need work; an intermittent entrance stoppage has not been conclusively resolved.
+1. Download the ZIP and extract the entire archive into a folder.
+2. Run StartGarden.cmd or MoonlitCourtyard.exe. The Unreal Editor is not required.
+3. Begin with the default medium settings and adjust for your computer.
+4. Explore the paths, approach Ema, then find a seat and linger.
 
-The repository contains game code, configuration, documentation and future commits. Download the Releases package for the playable game. Original models, scene sources, personal saves and production drafts are excluded from the code repository.
+If a Microsoft Visual C++ runtime is missing, the Prerequisites folder includes Microsoft’s x64 installer. Keep the Engine and MoonlitCourtyard folders beside the executable.
 
-## About this project
+<details>
+<summary>Current preview and future work</summary>
 
-This is an unofficial fan project featuring Sakuraba Ema from **魔法少女ノ魔女裁判**, unaffiliated with the original creators. **The Sakuraba Ema MMD model was created by POWER ([@MintLove2020](https://x.com/MintLove2020)) and is used and distributed in game form with the creator's permission.** This does not authorize standalone redistribution of the original model. See [CREDITS.md](CREDITS.md) for other asset credits and terms.
+Ema mainly uses the garden and ground floor. Autonomous stairs, complete sitting/standing, seated reading and physical flower handoff/wearing are not enabled. Some motion and visual details need work; an intermittent entrance stoppage is not conclusively resolved.
+
+</details>
+
+When reporting a problem, include the version, location and steps to reproduce it. [Share feedback](https://github.com/IKMXKT-love/MoonlitCourtyard/issues/new)
+
+## Credits and permission
+
+Sakuraba Ema MMD model: **POWER (@MintLove2020)**. Used and distributed in game form with the creator’s permission. This does not authorize standalone redistribution of the source model.
+
+An unofficial fan game based on 魔法少女ノ魔女裁判, unaffiliated with the original creators. Free, without advertising, paid content or donation prompts.
+
+[Full asset credits and terms](CREDITS.md) · [Code and version history](https://github.com/IKMXKT-love/MoonlitCourtyard)
+
+The repository stores code, configuration and future updates. Download the Releases package to play; cloning the code does not provide the complete scene assets.
