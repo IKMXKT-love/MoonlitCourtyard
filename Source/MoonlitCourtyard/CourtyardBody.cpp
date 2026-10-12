@@ -1,4 +1,5 @@
 ﻿#include "CourtyardController.h"
+#include "CourtyardContentLife.h"
 #include "Animation/AnimMontage.h"
 #include "Animation/AnimInstance.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -104,6 +105,7 @@ void ACourtyardController::UpdateBodyProps(){
     }
 }
 bool ACourtyardController::StartBody(int32 V,bool Review){
+    if(ContentLayer.IsValid() && ContentLayer->BlocksOrdinaryBehavior())return false;
     // Prop actions deferred: station clearance failed; tea contact also failed.
     // Preserve all three independent candidates without affecting normal play.
     if(V>=3 && V<=5 && !Review)return false;

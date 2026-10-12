@@ -20,6 +20,7 @@ private:
  FBoneReference TorsoLower,TorsoUpper;
  FBoneReference IdleBones[5];
  FBoneReference ElbowL,ElbowR,HeadTop;
+ FBoneReference PalmRight;
  FVector RefRight,RefForward,RefUp,HeadLocalForward;
  FCourtyardGazeFrame Cached;
  TSharedPtr<FCourtyardGazeProbe,ESPMode::ThreadSafe> Probe;

@@ -1,4 +1,5 @@
 #include "CourtyardController.h"
+#include "CourtyardContentLife.h"
 #include "NavigationSystem.h"
 #include "NavigationData.h"
 #include "NavigationPath.h"
@@ -14,6 +15,7 @@
 #include "Animation/AnimMontage.h"
 #include "AlphaBlend.h"
 #include "Engine/World.h"
+#include "EngineUtils.h"
 #include "Misc/CommandLine.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
@@ -61,10 +63,18 @@ void ACourtyardController::InitLocomotionNav()
     if(LocoNavRequested)return;
     auto* Nav=FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
     if(!Nav){UE_LOG(LogTemp,Warning,TEXT("COURTYARD_LOCO nav_missing"));LocoNavRequested=true;return;}
-    FCourtyardNavAccess::AddBounds(Nav,LocoArea,GetWorld()->PersistentLevel);
+    // Candidate levels are now saved under Content28/Content29, not ContentFix.
+    // Read the placed coordinator even if its BeginPlay has not assigned ContentLayer yet.
+    // A renamed level must retain the same floor coverage; legacy maps stay ground-only.
+    bool ContentFloors=false;
+    for(TActorIterator<ACourtyardContentLife> It(GetWorld());It;++It){
+        if(It->Enabled && It->FixEnabled){ContentFloors=true;break;}
+    }
+    const FBox Area=ContentFloors?FBox(FVector(-1450,-3200,-120),FVector(1450,2160,680)):LocoArea;
+    FCourtyardNavAccess::AddBounds(Nav,Area,GetWorld()->PersistentLevel);
     LocoAddNoWalkZones();
     LocoNavRequested=true;
-    UE_LOG(LogTemp,Display,TEXT("COURTYARD_LOCO nav_bounds_added box=%s navdata=%s t=%.2f"),*LocoArea.ToString(),*GetNameSafe(Nav->GetDefaultNavDataInstance(FNavigationSystem::DontCreate)),GetWorld()->GetTimeSeconds());
+    UE_LOG(LogTemp,Display,TEXT("COURTYARD_LOCO nav_bounds_added box=%s navdata=%s t=%.2f"),*Area.ToString(),*GetNameSafe(Nav->GetDefaultNavDataInstance(FNavigationSystem::DontCreate)),GetWorld()->GetTimeSeconds());
 }
 
 // One actor holds query-only boxes that ignore every channel (nothing else in the game is affected and they are not
@@ -90,7 +100,26 @@ bool ACourtyardController::LocoFindPath(const FVector& From,const FVector& To,TA
     Out.Reset();
     UNavigationPath* P=UNavigationSystemV1::FindPathToLocationSynchronously(const_cast<ACourtyardController*>(this),From,To,Emma());
     if(!P || !P->IsValid() || P->IsPartial())return false;
-    Out=P->PathPoints;return Out.Num()>=2;
+    Out=P->PathPoints;
+    if(ContentLayer.IsValid() && ContentLayer->FixEnabled){
+        // The retained flat walk must never flatten a route over the stairs.
+        // Only the measured stair coordinator can change floors.
+        if(FMath::Abs(From.Z-To.Z)>35)return false;
+        for(int32 K=0;K<Out.Num();++K){
+            FVector& V=Out[K];if(FMath::Abs(V.Z-(From.Z-80))<=35)continue;
+            // Recast's first/last vertex straddles the final stair raster cell.
+            // Only the measured upper landing may use its real support plane;
+            // interior vertices and all other floor changes remain forbidden.
+            const FVector End=K==0?From:To;
+            if((K!=0 && K!=Out.Num()-1) || End.Z<520 || End.Z>535 ||
+                End.X<-135 || End.X>-65 || End.Y<1500 || End.Y>1590 || FVector::Dist2D(V,End)>8)return false;
+            FHitResult H;FCollisionQueryParams Q(SCENE_QUERY_STAT(ContentLandingSupport),false,Emma());
+            if(!GetWorld()->LineTraceSingleByChannel(H,End-FVector(0,0,65),End-FVector(0,0,98),ECC_Pawn,Q) ||
+                FMath::Abs(H.ImpactPoint.Z-(From.Z-80))>5 || H.ImpactNormal.Z<.95f)return false;
+            V.Z=H.ImpactPoint.Z;
+        }
+    }
+    return Out.Num()>=2;
 }
 
 // Review: 0 = status, 1 = dump the generated walkable surface + path tests to Audit/Locomotion20261006/navmesh.json.
@@ -191,6 +220,23 @@ bool ACourtyardController::LocoStartWalk(const FVector& Goal,float Yaw,bool HasY
     LocoPathDist.Reset();LocoPathDist.Add(0);
     for(int32 K=1;K<LocoPath.Num();++K)LocoPathDist.Add(LocoPathDist.Last()+FVector::Dist2D(LocoPath[K-1],LocoPath[K]));
     const float Total=LocoPathDist.Last(),Whole=StrideLeft(StartAt);
+    // New opt-in flower dock reuses the existing stride-length planner. No old
+    // route/clip changes and no stationary final alignment (tolerance is0).
+    ContentPreciseWalk=ContentLayer.IsValid() && ContentLayer->FixEnabled && (Purpose.ToString().StartsWith(TEXT("Floor")) || (ContentLayer->FlowerScentEnabled && Purpose==TEXT("FlowerScentVisit")));
+    if(ContentPreciseWalk){
+        float Best=1e10f;ContentWalkCycles=-1;
+        for(int32 Cycles=0;Cycles<80;++Cycles){
+            const float Pre=StrideAt(3.6f)-StrideAt(StartAt)+Cycles*Cruise*LoopLen;
+            for(int32 K=0;K<=60;++K){
+                const float Stop=.85f+.005f*K,Scale=(Total-Stop*StrideLeft(3.6f))/Pre;
+                if(Scale<.92f || Scale>1.08f)continue;
+                const float Cost=FMath::Abs(Scale-1)+.3f*FMath::Abs(Stop-1);
+                if(Cost<Best){Best=Cost;ContentWalkCycles=Cycles;ContentWalkScale=Scale;}
+            }
+        }
+        if(ContentWalkCycles<0){UE_LOG(LogTemp,Display,TEXT("CONTENT_FIX floor_stride_unreachable length=%.2f"),Total);return false;}
+        UE_LOG(LogTemp,Display,TEXT("CONTENT_FIX floor_stride_plan cycles=%d cruise_scale=%.4f total=%.2f"),ContentWalkCycles,ContentWalkScale,Total);
+    }
     if(Total<Whole*.55f){UE_LOG(LogTemp,Display,TEXT("COURTYARD_LOCO too_short length=%.0f"),Total);return false;}
     LocoGoal=Goal;LocoGoalYaw=Yaw;LocoGoalHasYaw=HasYaw;LocoGoalTolerance=Tolerance;LocoPurpose=Purpose;LocoProgress=0;LocoTrim=0;LocoRate=1;++LocoTrip;LocoStopRequested=false;LocoLastArrived=false;
     LocoSavedControllerYaw=A->bUseControllerRotationYaw;A->bUseControllerRotationYaw=false;
@@ -198,7 +244,7 @@ bool ACourtyardController::LocoStartWalk(const FVector& Goal,float Yaw,bool HasY
     Move->MaxWalkSpeed=150;Move->MaxAcceleration=2000;Move->BrakingDecelerationWalking=2000;
     SetFlag(A,TEXT("TravelActive"),true);SetFlag(A,TEXT("AllowInteraction"),false);SetFlag(A,TEXT("ActivityEnabled"),false);
     // a path shorter than one full stride still uses the stride, its root motion scaled to the length
-    A->SetAnimRootMotionTranslationScale(Total<Whole?FMath::Clamp(Total/Whole,.55f,1.f):1.f);
+    A->SetAnimRootMotionTranslationScale(ContentPreciseWalk?ContentWalkScale:Total<Whole?FMath::Clamp(Total/Whole,.55f,1.f):1.f);
     I->Montage_PlayWithBlendIn(LocoStride,FAlphaBlendArgs(.25f),1.f,EMontagePlayReturnType::MontageLength,StartAt,false);
     LocoState=ELocoState::Start;LocoStateSince=GetWorld()->GetTimeSeconds();
     UE_LOG(LogTemp,Display,TEXT("COURTYARD_LOCO start trip=%d purpose=%s length=%.0f points=%d goal=%s yaw=%.0f has_yaw=%d mood_rate=%.2f t=%.2f"),LocoTrip,*Purpose.ToString(),Total,LocoPath.Num(),*Goal.ToString(),Yaw,HasYaw,LocoMoodRate,LocoStateSince);
@@ -216,7 +262,7 @@ void ACourtyardController::LocoEnd(bool Arrived,const TCHAR* Why)
     SetFlag(A,TEXT("TravelActive"),false);SetFlag(A,TEXT("AllowInteraction"),true);
     const float Err=FVector::Dist2D(A->GetActorLocation(),LocoGoal),YawErr=LocoGoalHasYaw?FMath::Abs(FMath::FindDeltaAngleDegrees(A->GetActorRotation().Yaw,LocoGoalYaw)):0;
     UE_LOG(LogTemp,Display,TEXT("COURTYARD_LOCO end trip=%d arrived=%d why=%s err_cm=%.1f yaw_err=%.1f pos=%s yaw=%.1f t=%.2f"),LocoTrip,Arrived,Why,Err,YawErr,*A->GetActorLocation().ToString(),A->GetActorRotation().Yaw,GetWorld()->GetTimeSeconds());
-    LocoLastEndAt=GetWorld()->GetTimeSeconds();LocoEndArrived=Arrived && !LocoStopRequested;LocoStopRequested=false;
+    LocoLastEndAt=GetWorld()->GetTimeSeconds();LocoEndArrived=Arrived && !LocoStopRequested && (!ContentPreciseWalk || (Err<=6 && YawErr<=5));LocoStopRequested=false;
     LocoState=ELocoState::Idle;LocoPath.Reset();
 }
 
@@ -228,6 +274,7 @@ void ACourtyardController::TickLocomotion(float Dt)
     if(!A || !I){LocoState=ELocoState::Idle;return;}
     const double Now=GetWorld()->GetTimeSeconds();
     const FVector Pos=A->GetActorLocation();
+    if(ContentPreciseWalk && LocoPath.Num() && FMath::Abs(Pos.Z-LocoPath[0].Z)>10.f){LocoEnd(false,TEXT("floor_height_guard"));return;}
     LocoProgress=LocoProject(Pos);
     const float Total=LocoPathDist.Num()?LocoPathDist.Last():0,Remaining=FMath::Max(0.f,Total-LocoProgress);
     // shorter look-ahead in tight curves so she follows the arc instead of cutting the corner
@@ -262,7 +309,7 @@ void ACourtyardController::TickLocomotion(float Dt)
         // turning: quick while still slow (stepping round), gentle at walking speed
         Steer(FMath::Lerp(130.f,62.f,FMath::Clamp(Speed/Cruise,0.f,1.f))*FMath::Max(LocoRate,.8f));
         if(LocoState==ELocoState::Start){
-            if(Total<StrideLeft(StartAt)){if(T>=StrideStill){LocoState=ELocoState::Settle;LocoStateSince=Now;LocoSettleFrom=Pos;LocoSettleYaw0=A->GetActorRotation().Yaw;}break;}
+            if(!ContentPreciseWalk && Total<StrideLeft(StartAt)){if(T>=StrideStill){LocoState=ELocoState::Settle;LocoStateSince=Now;LocoSettleFrom=Pos;LocoSettleYaw0=A->GetActorRotation().Yaw;}break;}
             if(T<CruiseFrom)break;
             LocoState=ELocoState::Cruise;LocoStateSince=Now;
             UE_LOG(LogTemp,Display,TEXT("COURTYARD_LOCO cruise trip=%d remaining=%.0f t=%.2f"),LocoTrip,Remaining,Now);
@@ -277,19 +324,40 @@ void ACourtyardController::TickLocomotion(float Dt)
         const float Cycles=FMath::Max(0.f,FMath::RoundToFloat((Remaining-Lattice0)/(Cruise*LoopLen)));
         const float Eps=Remaining-(Lattice0+Cruise*LoopLen*Cycles);
         LocoTrim=Remaining<450.f?FMath::Clamp(Eps/FMath::Max(Remaining-StrideLeft(3.6f),60.f),-.08f,.08f):0.f;
-        A->SetAnimRootMotionTranslationScale(1.f+LocoTrim);
+        if(ContentPreciseWalk && !LocoStopRequested){
+            const float CruiseLeft=FMath::Max(0.f,StrideAt(3.6f)-StrideAt(T))+ContentWalkCycles*Cruise*LoopLen;
+            if(CruiseLeft>8){
+                // Curved travel loses path progress compared with straight root distance.
+                // Correct during walking within the existing 8% range, before stopping.
+                const float Desired=FMath::Clamp((Remaining-StrideLeft(3.6f))/CruiseLeft,.92f,1.08f);
+                ContentWalkScale=FMath::FInterpTo(ContentWalkScale,Desired,Dt,2.f);
+            }
+        }
+        A->SetAnimRootMotionTranslationScale(ContentPreciseWalk?ContentWalkScale:1.f+LocoTrim);
         if(T>=3.6f){
-            float S=Remaining/StrideLeft(3.6f);
+            float S=Remaining/StrideLeft(ContentPreciseWalk?T:3.6f);
+            if(ContentPreciseWalk && (LocoPurpose==TEXT("FloorReadingApproach") || (ContentLayer.IsValid() && ContentLayer->FlowerScentEnabled && LocoPurpose==TEXT("FlowerScentVisit"))) && Remaining<120.f){
+                // The chair's curved approach can project ahead of the real position.
+                // At the final straight stop, use the measured distance to the chair
+                // entry, not progress around a nearby curve. No endpoint relocation.
+                const float Direct=FVector::Dist2D(Pos,LocoGoal);
+                const FVector Direction=(LocoGoal-Pos).GetSafeNormal2D();
+                if(FVector::DotProduct(A->GetActorForwardVector(),Direction)>.96f){
+                    UE_LOG(LogTemp,Display,TEXT("CONTENT_FIX reading_stop_distance path=%.3f direct=%.3f"),Remaining,Direct);
+                    S=Direct/StrideLeft(T);
+                }
+            }
             if(LocoStopRequested && S>1.15f){   // asked to stop early (a player in the way, a follow that ends): stop here, short of them
                 const float Room=PlayerCharacter?float(FVector::Dist2D(PlayerCharacter->GetActorLocation(),Pos))-80.f:StrideLeft(3.6f);
                 S=FMath::Clamp(Room/StrideLeft(3.6f),.55f,1.f);
             }
-            if(S<=1.15f){   // this boundary is the stop: let the clip run on into its own stop part
+            if(ContentPreciseWalk?(ContentWalkCycles<=0 || LocoStopRequested):S<=1.15f){   // this boundary is the stop: let the clip run on into its own stop part
                 LocoStopScale=FMath::Clamp(S,.85f,1.15f);A->SetAnimRootMotionTranslationScale(LocoStopScale);
                 LocoStopEntry=T;LocoState=ELocoState::Stop;LocoStateSince=Now;LocoStopYaw0=Yaw;LocoStopYaw1=LocoGoalHasYaw?LocoGoalYaw:Want;
                 UE_LOG(LogTemp,Display,TEXT("COURTYARD_LOCO stop trip=%d t=%.3f stop_dist=%.1f remaining=%.1f scale=%.3f rate=%.2f t=%.2f"),LocoTrip,T,StrideLeft(3.6f),Remaining,S,LocoRate,Now);
                 break;
             }
+            if(ContentPreciseWalk)--ContentWalkCycles;
             I->Montage_SetPosition(LocoStride,T-LoopLen);T-=LoopLen;
         }
         break;}

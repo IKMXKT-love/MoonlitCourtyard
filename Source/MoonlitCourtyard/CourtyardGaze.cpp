@@ -1,4 +1,5 @@
 #include "CourtyardController.h"
+#include "CourtyardContentLife.h"
 #include "CourtyardGazeAnimInstance.h"
 #include "Animation/AnimMontage.h"
 #include "Animation/AnimNode_LinkedInputPose.h"
@@ -18,6 +19,12 @@ FGazePolicy Policy(FString Name,bool Authored,bool Walking)
 {
  if(Walking)return {TEXT(""),0,1,6};if(!Authored)return {TEXT(""),1,1,0};
  Name.RemoveFromStart(TEXT("AM_Emma_"));Name.RemoveFromStart(TEXT("Lively_"));
+ // Candidate-only duplicates retain the gaze policy of their unchanged body source.
+ if(Name==TEXT("AM_DaydreamFixed"))return {TEXT("AM_DaydreamFixed"),0,0,3};
+ if(Name==TEXT("AM_EmotionSad"))Name=TEXT("DaydreamHead");
+ if(Name==TEXT("AM_EmotionSurprise"))Name=TEXT("StartleBody");
+ if(Name==TEXT("AM_EmotionShy"))Name=TEXT("ShyAway");
+ if(Name==TEXT("AM_EmotionReunion"))Name=TEXT("Welcome");
  static const FGazePolicy Rules[]={
   {TEXT("Response"),1,1,1},{TEXT("HeadPatSmile"),1,1,1},{TEXT("Chuckle"),1,1,1},{TEXT("Proud"),1,1,1},
   {TEXT("Mumble"),1,1,1},{TEXT("SuppressYawn"),1,1,1},{TEXT("PoutHead"),1,1,1},{TEXT("ShyAway"),1,1,1},
@@ -191,6 +198,8 @@ void ACourtyardController::TickGaze(float Dt)
  }
  Frame.Distance=Distance;Frame.RawYaw=RawYaw;Frame.RawPitch=RawPitch;Frame.Visible=Visible;Frame.Category=Rule.Category;
  TickIdleVariation(Dt,G,Authored||Walking||Page!=ECourtyardPage::Game);
+ if(ContentLayer.IsValid())ContentLayer->FillTerracePalmFrame(Frame);
+ if(ContentLayer.IsValid())ContentLayer->FillFlowerScentFrame(Frame);
  if(Review&&G->Probe){FScopeLock Lock(&G->Probe->Mutex);auto& B=*G->Probe;if(B.Time>GazeLastProbe){GazeLastProbe=B.Time;
   FString Q;for(int32 I=0;I<4;++I){const auto& R=B.Output[I];Q+=FString::Printf(TEXT(",%.7f,%.7f,%.7f,%.7f"),R.X,R.Y,R.Z,R.W);}
   float Delta=0;for(int32 I=0;I<4;++I)Delta=FMath::Max(Delta,float(FMath::RadiansToDegrees(B.Input[I].AngularDistance(B.Output[I]))));

@@ -1,4 +1,5 @@
 #include "CourtyardController.h"
+#include "CourtyardContentLife.h"
 #include "CourtyardGazeAnimInstance.h"
 #include "Engine/World.h"
 #include "Misc/CommandLine.h"
@@ -60,5 +61,6 @@ void ACourtyardController::TickIdleVariation(float Dt,UCourtyardGazeAnimInstance
  if(Goal!=IdleFadeTo){IdleFadeFrom=IdleWeight;IdleFadeTo=Goal;IdleFadeAt=Now;}
  IdleWeight=FMath::Lerp(IdleFadeFrom,IdleFadeTo,IdleEase(float((Now-IdleFadeAt)/(IdleFadeTo<IdleFadeFrom?.5:2.5))));
  for(int I=0;I<PostureCount;++I)G->Frame.IdleAngles[I]=IdleCurrent[I]+MoodPostureCurrent[I];
+ if(ContentLayer.IsValid() && ContentLayer->FixEnabled)ContentLayer->ComposeFixedPosture(Dt,G->Frame.IdleAngles);
  G->Frame.IdleWeight=IdleWeight;G->Frame.IdleVariant=IdleVariant;
 }

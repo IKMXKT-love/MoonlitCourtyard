@@ -1,4 +1,5 @@
 #include "CourtyardController.h"
+#include "CourtyardContentLife.h"
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimMontage.h"
 #include "Animation/AnimSequence.h"
@@ -82,6 +83,7 @@ bool ACourtyardController::LivelyReady(FName Id,bool Forced) const
 }
 bool ACourtyardController::LivelySafe(bool Body) const
 {
+    if(ContentLayer.IsValid() && ContentLayer->BlocksOrdinaryBehavior())return false;
     auto* A=Cast<ACharacter>(Emma());auto* I=A&&A->GetMesh()?A->GetMesh()->GetAnimInstance():nullptr;const double Now=GetWorld()->GetTimeSeconds();
     return I && Page==ECourtyardPage::Game && !PoseTransition && !IsSeatBusy() && !LivingTrip && LivingBehavior<0 && !ActiveAmbient
         && !I->IsAnyMontagePlaying() && !BPBool(A,TEXT("TravelActive")) && !BPBool(A,TEXT("Interrupted")) && BPBool(A,TEXT("AllowInteraction"))
@@ -103,6 +105,8 @@ void ACourtyardController::LivelyFinished(FName Id,const TCHAR* Reason)
 }
 UAnimMontage* ACourtyardController::LivelyMotion(FName Name,UAnimMontage* Fallback) const
 {
+    if(Name==TEXT("DaydreamHead") && ContentLayer.IsValid() && ContentLayer->FixEnabled)
+        if(const auto* New=ContentLayer->Motions.Find(TEXT("DaydreamFixed")))if(*New)return New->Get();
     if(LivelyEnabled && LivelyTuneEnabled && PresenceGesturesEnabled)if(const auto* New=PresenceMotions.Find(Name))if(*New)return New->Get();
     if(LivelyEnabled && LivelyTuneEnabled)if(const auto* New=TunedMotions.Find(Name))if(*New)return New->Get();
     const auto* P=LivelyMotions.Find(Name);return LivelyEnabled && P && *P?P->Get():Fallback;
@@ -152,12 +156,14 @@ bool ACourtyardController::SelectLivelyResponse()
 }
 void ACourtyardController::ExecutePatResponse()
 {
+    if(ContentLayer.IsValid() && ContentLayer->BlocksPatResponse())return;
     LivelyWitnessReply=NAME_None;LivelyWitnessed=false;CancelFace();SelectResponse();PendingPatSource=NAME_None;ExecuteLegacy(EKeys::E);
     auto* A=Cast<ACharacter>(Emma());auto* I=A&&A->GetMesh()?A->GetMesh()->GetAnimInstance():nullptr;
     auto* Pat=LoadObject<UAnimMontage>(nullptr,TEXT("/Game/Emma/Animations/AM_Emma_HeadPatSmile"));
     const bool Accepted=I && Pat && I->Montage_IsPlaying(Pat);
     if(Accepted){DropHatPetal(true);P3HatDue=-1;P3GustHairPending=false;P3WishPending=false;P3WishUntil=-1;P3FlyVisitUntil=-1;P2PoutUntil=-1;LastBodyPat=GetWorld()->GetTimeSeconds();MoodEvent(TEXT("pat"));if(LivelyOn(TEXT("B3"))){LivelyResponseActive=true;LivelyStarted(TEXT("B3"),TEXT("E_montage_started"),false);}}
     UE_LOG(LogTemp,Display,TEXT("COURTYARD_RESPONSE actual_started=%d time=%.3f"),Accepted,GetWorld()->GetTimeSeconds());
+    if(Accepted && ContentLayer.IsValid())ContentLayer->PatAccepted();
 }
 bool ACourtyardController::LivelyCanYieldToPat() const
 {
@@ -233,6 +239,7 @@ void ACourtyardController::TickLively(float Dt)
         else if(Now>PendingLivelyPatUntil){PendingLivelyPat=false;PendingPatSource=NAME_None;}
     }
     if(PlayerCharacter){const bool Falling=PlayerCharacter->GetCharacterMovement()->IsFalling();if(Falling && !PlayerWasFalling && PlayerCharacter->GetVelocity().Z>30)PlayerJumps.Add(Now);PlayerWasFalling=Falling;PlayerJumps.RemoveAll([Now](double T){return Now-T>5;});}
+    if(ContentLayer.IsValid() && ContentLayer->BlocksOrdinaryBehavior())return;
     if(Now<LivelyCheckAt)return;LivelyCheckAt=Now+.2;
     if(LivelyFaceId==TEXT("A3") && PlayerWatching && WatchedSince>FaceStarted && FaceCancel<0){
         StartFace(TEXT("A3"),{Phase(0,.65,{{30,.6f},{72,.8f}},.12f)},.8f,TEXT(""),3);

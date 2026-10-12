@@ -1,4 +1,5 @@
 #include "CourtyardController.h"
+#include "CourtyardContentLife.h"
 #include "LivingRouteData.h"
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimMontage.h"
@@ -60,6 +61,7 @@ void ACourtyardController::InitializeLiving(){
 }
 
 bool ACourtyardController::StartLiving(int32 V,bool Review){
+ if(ContentLayer.IsValid() && ContentLayer->BlocksOrdinaryBehavior())return false;
  InitializeLiving();auto* A=Cast<ACharacter>(Emma());auto* M=A?A->GetMesh():nullptr;auto* I=M?M->GetAnimInstance():nullptr;
  const double Now=GetWorld()->GetTimeSeconds();
  if(!LivingInitialized || V<0 || V>5 || LivingBehavior>=0 || !I || ActiveAmbient || I->IsAnyMontagePlaying() || Page!=ECourtyardPage::Game

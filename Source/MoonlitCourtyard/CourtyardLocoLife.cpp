@@ -1,4 +1,5 @@
 #include "CourtyardController.h"
+#include "CourtyardContentLife.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -138,7 +139,7 @@ void ACourtyardController::TickLocoLife(float Dt)
 {
     if(!LocoOn || Page!=ECourtyardPage::Game)return;
     InitLocoLife();
-    if(LocoLifePaused)return;
+    if(LocoLifePaused || (ContentLayer.IsValid() && ContentLayer->BlocksOrdinaryBehavior()))return;
     auto* A=Cast<ACharacter>(Emma());auto* I=A&&A->GetMesh()?A->GetMesh()->GetAnimInstance():nullptr;if(!A || !I)return;
     const double Now=GetWorld()->GetTimeSeconds();
     const FVector Me=A->GetActorLocation();

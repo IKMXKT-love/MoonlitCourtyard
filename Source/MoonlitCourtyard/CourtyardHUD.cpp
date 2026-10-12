@@ -1,5 +1,8 @@
 ﻿#include "CourtyardHUD.h"
 #include "CourtyardController.h"
+#include "CourtyardContentLife.h"
+#include "CourtyardContentDoor.h"
+#include "EngineUtils.h"
 #include "Engine/Canvas.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
@@ -133,6 +136,55 @@ void ACourtyardHUD::DrawMap()
     // Every grand-manor map family (GrandManor, ManorFitout, ManorBehavior, ManorLife, ManorWelcome) shares this layout.
     const bool Manor=GetWorld()->GetMapName().Contains(TEXT("Manor"));
     const bool Upstairs=Manor&&C->GetPawn()&&C->GetPawn()->GetActorLocation().Z>350;
+    if(Upstairs && C->ContentLayer.IsValid() && C->ContentLayer->FixEnabled)
+    {
+        // Only the merged-room candidate opts in; prior maps keep their original plan.
+        bool MergedBathroom=false,SlidingRooms=false;
+        for(TActorIterator<ACourtyardContentDoor> It(GetWorld());It;++It)
+        {if(It->ActorHasTag(TEXT("MergedBathroom46")))MergedBathroom=true;if(It->SlidingDoor)SlidingRooms=true;}
+        const float BedroomWallY=MergedBathroom?1530.f:1610.f;
+        // Floor-focused plan at the same world orientation as the garden map.
+        // New west-wing partitions are drawn with their real door gaps.
+        Panel(116,134,720,565,FLinearColor(.022f,.041f,.051f,.95f));
+        auto P=[&](float X,float Y){return FVector2D(476-X*.245f,177+(2160-Y)*.245f);};
+        auto A=[&](float X,float Y,float W,float H,FLinearColor Col){auto V=P(X+W*.5f,Y+H*.5f);Rect(V.X,V.Y,W*.245f,H*.245f,Col);};
+        auto L=[&](float X,float Y,float X2,float Y2){auto V=P(X,Y),W=P(X2,Y2);Line(V.X,V.Y,W.X,W.Y,Gold,2);};
+        auto Label=[&](float X,float Y,const TCHAR* N,float Size=17.f){auto V=P(X,Y);Text(N,V.X-FCString::Strlen(N)*Size*.5f,V.Y-Size*.5f,Size,Ivory);};
+        A(0,1240,2440,1840,FLinearColor(.21f,.25f,.27f));
+        A(0,1240,2390,1790,FLinearColor(.09f,.13f,.15f));
+        A(-905,980,610,1260,FLinearColor(.18f,.15f,.20f));
+        A(880,1000,600,1300,FLinearColor(.13f,.20f,.19f));
+        if(MergedBathroom)A(-910,1888,568,300,FLinearColor(.17f,.23f,.28f));
+        else {A(-1064,1888,254,294,FLinearColor(.18f,.24f,.27f));A(-774,1888,292,294,FLinearColor(.17f,.23f,.28f));}
+        for(int Side:{-1,1}){L(Side*565,340,Side*565,910);L(Side*565,1090,Side*565,(SlidingRooms&&Side==-1)?1552:1590);L(Side*565,(SlidingRooms&&Side==-1)?1708:1860,Side*565,2140);}
+        L(-1240,BedroomWallY,-849,BedroomWallY);L(-733,BedroomWallY,-615,BedroomWallY);
+        if(MergedBathroom)L(-1240,1730,-795,1730);
+        else {L(-1240,1730,-1102,1730);L(-1002,1730,-795,1730);L(-925,1730,-925,2040);}
+        L(-695,1730,-615,1730);
+        L(-622,1730,-622,2040);L(-1240,2040,-622,2040);
+        // Hinged-leaf marks identify doors without suggesting solid wall closures.
+        if(SlidingRooms){L(-958,BedroomWallY-17,-848,BedroomWallY-17);L(-920,1747,-810,1747);}
+        else {L(-733,BedroomWallY,-733,BedroomWallY-80);if(!MergedBathroom)L(-1002,1730,-1002,1810);L(-695,1730,-695,1810);}
+        A(0,1760,385,510,FLinearColor(.055f,.08f,.10f));
+        for(int K=0;K<12;++K){L(20,1550+K*38,175,1550+K*38);L(-175,1550+K*38,-20,1550+K*38);}
+        Label(0,2070,TEXT("楼梯平台"),14);
+        if(MergedBathroom)Label(-910,1900,TEXT("浴室"),23);
+        else {Label(-1064,1900,TEXT("厕所"));Label(-774,1900,TEXT("浴室"));}
+        Label(-905,1210,TEXT("卧室"),23);Label(-905,1680,TEXT("卫浴前廊"),12);
+        Label(880,1180,TEXT("书房"),23);Label(850,1850,TEXT("资料架"),16);
+        Label(0,1400,TEXT("画廊"),21);Label(0,1010,TEXT("起居厅"),21);Label(0,520,TEXT("音乐角"),21);
+        auto Pos=C->GetPawn()->GetActorLocation();auto V=P(Pos.X,Pos.Y);float Yaw=FMath::DegreesToRadians(C->GetControlRotation().Yaw);
+        FVector2D D(-FMath::Cos(Yaw),-FMath::Sin(Yaw)),Side(-D.Y,D.X);Ring(V.X,V.Y,12,Gold,2);Disk(V.X,V.Y,4,Ivory);
+        Line(V.X+D.X*18,V.Y+D.Y*18,V.X-D.X*2+Side.X*5,V.Y-D.Y*2+Side.Y*5,Ivory,2);
+        Line(V.X+D.X*18,V.Y+D.Y*18,V.X-D.X*2-Side.X*5,V.Y-D.Y*2-Side.Y*5,Ivory,2);
+        Text(TEXT("庄园 · 二层"),872,170,27,Ivory);Text(TEXT("房间与通路"),872,211,17,Muted);Line(872,248,1155,248,Gold);
+        Text(TEXT("沿画廊前往西翼卫浴"),872,285,18,Ivory);Text(TEXT("门洞留白，短线表示门扇"),872,325,16,Muted);
+        Ring(883,404,9,Gold,2);Text(TEXT("你的位置与朝向"),906,393,18,Muted);
+        Text(TEXT("上方为北侧"),872,461,17,Muted);Text(TEXT("下楼后显示完整庭院图"),872,499,17,Muted);
+        Line(176,660,225,660,Gold,2);Text(TEXT("2 米"),182,671,13,Muted);
+        Button(TEXT("返回庭院"),872,632,278,[this](float){C->OpenPage(ECourtyardPage::Game);});
+        return;
+    }
     const float S=Manor?.088f:.118f;
     // UE is left-handed: with +Y up the page, +X lies to the LEFT. Drawing +X to the right mirrored
     // the garden (turning right in game spun the arrow anticlockwise).
@@ -254,6 +306,8 @@ void ACourtyardHUD::DrawHUD()
             MenuCard(TEXT("偏好设置"),TEXT("声音、画面与操作"),300,[this](float){C->OpenPage(ECourtyardPage::Settings);});
             MenuCard(TEXT("操作指引"),TEXT("查看行走、姿态与互动按键"),395,[this](float){C->OpenPage(ECourtyardPage::Controls);});
             MenuCard(TEXT("离开庭院"),TEXT("为下一次相见，留一盏灯"),490,[this](float){C->OpenPage(ECourtyardPage::Exit);});
+            Text(TEXT("樱羽艾玛（MMD）模型：POWER @MintLove2020"),148,647,15,Ivory);
+            Text(TEXT("已获得制作者许可，以游戏形式使用与分发。"),148,675,15,Muted);
         }
         else if(C->Page==ECourtyardPage::Settings)DrawSettings();
         else if(C->Page==ECourtyardPage::Map)DrawMap();

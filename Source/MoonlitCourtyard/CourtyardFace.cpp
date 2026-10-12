@@ -1,4 +1,5 @@
 #include "CourtyardController.h"
+#include "CourtyardContentLife.h"
 #include "Animation/AnimInstance.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/SkeletalMesh.h"
@@ -253,6 +254,7 @@ void ACourtyardController::TickFaceLayers(float Dt)
     Positive.Sort([&](FName AName,FName BName){return Target[AName]>Target[BName];});
     for(int32 N=12;N<Positive.Num();++N)Target[Positive[N]]=0.f;
     FacePeakChannels=FMath::Max(FacePeakChannels,FMath::Min(12,Positive.Num()));
+    if(ContentLayer.IsValid() && ContentLayer->FixEnabled)ContentLayer->ComposeFixedFace(Target);
     // Remove only overrides that this layer created. Animation curves remain untouched.
     for(const auto& P:FaceOwnedValues)if(!Target.Contains(P.Key))M->SetMorphTarget(P.Key,0.f,true);
     for(const auto& P:Target){const float* Old=FaceOwnedValues.Find(P.Key);if(!Old || !FMath::IsNearlyEqual(*Old,P.Value,.0005f))M->SetMorphTarget(P.Key,P.Value,false);}

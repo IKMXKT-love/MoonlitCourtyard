@@ -1,4 +1,5 @@
 #include "CourtyardController.h"
+#include "CourtyardContentLife.h"
 #include "Animation/AnimInstance.h"
 #include "Animation/AnimMontage.h"
 #include "Camera/CameraComponent.h"
@@ -56,11 +57,19 @@ bool ACourtyardController::SeenOrWaited(double& Since) const {
 }
 
 bool ACourtyardController::PlayCompanion(UAnimMontage* Motion,int32 Code,const TCHAR* Why){
+ const bool TerracePalmEntry=Code==737 && ContentLayer.IsValid() && ContentLayer->TerraceContactEnabled;
+ const bool FlowerScentEntry=Code==738 && ContentLayer.IsValid() && ContentLayer->FlowerScentEnabled;
+ if(ContentLayer.IsValid() && ContentLayer->BlocksOrdinaryBehavior() && Code!=723 && !TerracePalmEntry && !FlowerScentEntry)return false;
+ const bool EmotionEntry=Code==723 && ContentLayer.IsValid() && ContentLayer->BlocksOrdinaryBehavior();
+ // New opt-in seated sky action uses its scene's Safe() and actual-arrival
+ // qualifications. A shared-sky partner need not be within headpat reach.
+ // Original entry codes and their near-player/glance rules remain unchanged.
+ const bool SeatedSkyEntry=Code==736 && ContentLayer.IsValid() && ContentLayer->SeatedSkyScenesEnabled && Pose==ECourtyardPose::Seated;
  auto* A=Cast<ACharacter>(Emma());auto* I=A&&A->GetMesh()?A->GetMesh()->GetAnimInstance():nullptr;const double Now=GetWorld()->GetTimeSeconds();
  if(!Motion || !I || LivingTrip || LivingBehavior>=0 || ActiveAmbient || I->IsAnyMontagePlaying() || Page!=ECourtyardPage::Game
-  || BPBool(A,TEXT("TravelActive")) || BPBool(A,TEXT("Interrupted")) || !BPBool(A,TEXT("AllowInteraction")) || !QueryBool(A,TEXT("CanHeadPat"))
-  || A->GetVelocity().Size()>2.f || Now-AmbientStillSince<5. || CompanionNumber(A,TEXT("DueTime"),Now+100)-Now<9.
-  || Now-CompanionNumber(A,TEXT("LastGlanceTime"),-100.)<10.)return false;
+  || BPBool(A,TEXT("TravelActive")) || BPBool(A,TEXT("Interrupted")) || !BPBool(A,TEXT("AllowInteraction")) || (!SeatedSkyEntry && !TerracePalmEntry && !FlowerScentEntry && !QueryBool(A,TEXT("CanHeadPat")))
+  || A->GetVelocity().Size()>2.f || (!EmotionEntry && !SeatedSkyEntry && !TerracePalmEntry && !FlowerScentEntry && (Now-AmbientStillSince<5. || CompanionNumber(A,TEXT("DueTime"),Now+100)-Now<9.
+  || Now-CompanionNumber(A,TEXT("LastGlanceTime"),-100.)<10.)))return false;
  CompanionBool(A,TEXT("AllowInteraction"),false);
  if(I->Montage_Play(Motion,1.f,EMontagePlayReturnType::MontageLength,0.f,false)<=0.f){CompanionBool(A,TEXT("AllowInteraction"),true);return false;}
  ActiveAmbient=Motion;AmbientActor=A;AmbientBehavior=Code;

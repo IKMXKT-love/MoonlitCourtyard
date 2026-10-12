@@ -10,6 +10,7 @@ class ACharacter;
 class UAudioComponent;
 class UAnimSequence;
 class UAnimMontage;
+class ACourtyardContentLife;
 UENUM() enum class ECourtyardPose : uint8 { Standing, Crouched, Prone, Supine, Seated };
 UENUM() enum class ECourtyardPage : uint8 { Game, Home, Settings, Controls, Map, Exit, DisplayConfirm };
 
@@ -97,11 +98,14 @@ public:
     UFUNCTION(Exec) void CourtyardReviewSocial(int32 Mode);
     UFUNCTION(Exec) void CourtyardReviewEnvironment(int32 Event);
     UFUNCTION(Exec) void CourtyardReviewMeshProbe(FString Name);
+    UFUNCTION(Exec) void CourtyardReviewContent(int32 Event);
+    TWeakObjectPtr<ACourtyardContentLife> ContentLayer;
     bool CanHighFiveReply() const;
     bool ReplyHighFive();
     UPROPERTY(VisibleAnywhere) int32 AmbientBehavior = INDEX_NONE;
     UPROPERTY(VisibleAnywhere) int32 BodyBehavior = INDEX_NONE;
 private:
+    friend class ACourtyardContentLife;
     void TickGaze(float Dt);
     UPROPERTY() TSoftClassPtr<class UAnimInstance> GazeClass;
     TWeakObjectPtr<class UCourtyardGazeAnimInstance> GazeInstance;
@@ -185,6 +189,9 @@ private:
     TArray<FVector> LocoPath;TArray<float> LocoPathDist;
     FVector LocoGoal=FVector::ZeroVector;float LocoGoalYaw=0;bool LocoGoalHasYaw=false;float LocoGoalTolerance=12;
     float LocoRate=1,LocoMoodRate=1,LocoTrim=0,LocoPrevPhase=0,LocoProgress=0,LocoStopScale=1,LocoStopEntry=0,LocoStopYaw0=0,LocoStopYaw1=0;
+    bool ContentPreciseWalk=false;
+    int32 ContentWalkCycles=0;
+    float ContentWalkScale=1;
     double LocoStateSince=0,LocoSampleAt=0;FVector LocoSettleFrom=FVector::ZeroVector;float LocoSettleYaw0=0;
     FName LocoPurpose;int32 LocoTrip=0;bool LocoSavedControllerYaw=true;float LocoSavedSpeed=0,LocoSavedAccel=0,LocoSavedBraking=0;
     bool LocoStartWalk(const FVector& Goal,float Yaw,bool HasYaw,FName Purpose,float Tolerance=12);

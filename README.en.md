@@ -33,12 +33,18 @@ Follow the in-game interaction prompts. Some responses are temporarily unavailab
 
 ## Current version and downloads
 
-The current Windows courtyard experience is still being developed. Ema's activities mainly cover the garden and ground floor. Her autonomous sitting and standing are not yet complete, and some animations and scene details still need refinement.
+Public version: **v0.49.1 · Windows 64-bit courtyard preview**, based on version 49 with creator permission and attribution added.
 
-**No public game download is available yet.** The project is intended to be shared for free, without monetization, but permission to publicly distribute the character model and other third-party assets still needs to be confirmed. Once the necessary permissions are obtained, game packages will be published through this repository's Releases.
+**Free to download, with no advertising, paid content, or donation prompts.** [Download the game ZIP](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.49.1/MoonlitCourtyard-v0.49.1-Windows.zip) · [Release notes and checksums](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.49.1)
 
-This repository contains current code and configuration, along with future version updates. It does not include complete scene assets, the character model, or a game package. Downloading the source alone will not let you run the complete game.
+Extract the entire ZIP into a folder, then double-click `StartGarden.cmd` or `MoonlitCourtyard.exe`. Do not extract only the executable. The Unreal Editor is not required. Start with the default medium graphics settings and adjust for your computer. The game interface is currently primarily Chinese; repository introductions are available in five texts.
+
+Recent changes include flowerbed, pond, fireplace and stained-glass visits; shared sky-watching while the player is seated; improved held-flower visibility; a merged bathroom, grouped furniture and sliding doors; entrance, dark-wall, fountain escape and wall-corner repairs. Additional controls: **G** pick/show/place a flower, **R** interact with doors, **Space** jump, **Ctrl** crouch, **C** prone, **X** lie on your back.
+
+This is an evolving preview. Ema mainly uses the garden and ground floor. Autonomous stair use, complete sitting/standing, seated reading and physical flower handoff/wearing are not enabled. Some motion and visual details need work; an intermittent entrance stoppage has not been conclusively resolved.
+
+The repository contains game code, configuration, documentation and future commits. Download the Releases package for the playable game. Original models, scene sources, personal saves and production drafts are excluded from the code repository.
 
 ## About this project
 
-This is an unofficial fan project featuring Sakuraba Ema from **魔法少女ノ魔女裁判**. It is not affiliated with the original creators. The character model was made by **POWER**. Rights to the character and third-party assets belong to their respective rights holders; this repository grants no permission to use or redistribute those assets.
+This is an unofficial fan project featuring Sakuraba Ema from **魔法少女ノ魔女裁判**, unaffiliated with the original creators. **The Sakuraba Ema MMD model was created by POWER ([@MintLove2020](https://x.com/MintLove2020)) and is used and distributed in game form with the creator's permission.** This does not authorize standalone redistribution of the original model. See [CREDITS.md](CREDITS.md) for other asset credits and terms.

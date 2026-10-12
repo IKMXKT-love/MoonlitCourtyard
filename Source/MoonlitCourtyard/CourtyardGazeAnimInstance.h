@@ -22,6 +22,9 @@ struct FCourtyardGazeFrame
  float IdleAngles[11]={0,0,0,0,0,0,0,0,0,0,0};
  float IdleWeight=0;
  int32 IdleVariant=0;
+ // New-map-only contact correction copied on the game thread; defaults inert.
+ FVector TerracePalmOffsetCS=FVector::ZeroVector;
+ float TerracePalmWeight=0,TerracePalmYaw=0;
 };
 // Posture channels, all in the body's own frame. Positive = the named direction.
 enum ECourtyardPosture : int32 {ChestForward,ShoulderDropL,ShoulderDropR,ShoulderForwardL,ShoulderForwardR,ArmOutL,ArmOutR,ArmForwardL,ArmForwardR,HeadDown,HeadTiltRight,PostureCount};

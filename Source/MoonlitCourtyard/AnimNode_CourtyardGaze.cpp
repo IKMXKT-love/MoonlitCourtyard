@@ -1,6 +1,7 @@
 #include "AnimNode_CourtyardGaze.h"
 #include "Animation/AnimInstanceProxy.h"
 #include "AnimationRuntime.h"
+#include "TwoBoneIK.h"
 #include "Misc/ScopeLock.h"
 FAnimNode_CourtyardGaze::FAnimNode_CourtyardGaze()
 {
@@ -8,6 +9,7 @@ FAnimNode_CourtyardGaze::FAnimNode_CourtyardGaze()
  TorsoLower.BoneName=TEXT("上半身");TorsoUpper.BoneName=TEXT("上半身2");
  const FName Names[]={TEXT("上半身2"),TEXT("肩_L"),TEXT("肩_R"),TEXT("腕_L"),TEXT("腕_R")};for(int I=0;I<5;++I)IdleBones[I].BoneName=Names[I];
  ElbowL.BoneName=TEXT("ひじ_L");ElbowR.BoneName=TEXT("ひじ_R");HeadTop.BoneName=TEXT("頭先");
+ PalmRight.BoneName=TEXT("手首_R");
 }
 void FAnimNode_CourtyardGaze::PreUpdate(const UAnimInstance* I)
 {
@@ -17,6 +19,7 @@ void FAnimNode_CourtyardGaze::InitializeBoneReferences(const FBoneContainer& B)
 {
  for(auto* R:{&Neck,&Head,&LeftEye,&RightEye,&LeftFoot,&RightFoot,&TorsoLower,&TorsoUpper,&ElbowL,&ElbowR,&HeadTop})R->Initialize(B);
  for(auto& R:IdleBones)R.Initialize(B);
+ PalmRight.Initialize(B);
  const FReferenceSkeleton& S=B.GetReferenceSkeleton();
  auto T=[&](FName N){return FAnimationRuntime::GetComponentSpaceTransformRefPose(S,S.FindBoneIndex(N));};
  if(S.FindBoneIndex(TEXT("頭先"))==INDEX_NONE)return;
@@ -94,6 +97,16 @@ void FAnimNode_CourtyardGaze::EvaluateSkeletalControl_AnyThread(FComponentSpaceP
   Rotate(Indices[2],Q);Rotate(Indices[3],Q);
  }
  TArray<FCompactPoseBoneIndex> Changed;
+ if(Cached.TerracePalmWeight>0 && IdleBones[4].IsValidToEvaluate(B) && ElbowR.IsValidToEvaluate(B) && PalmRight.IsValidToEvaluate(B)){
+  const auto UI=IdleBones[4].GetCompactPoseIndex(B),EI=ElbowR.GetCompactPoseIndex(B),HI=PalmRight.GetCompactPoseIndex(B);
+  FTransform U=W.GetComponentSpaceTransform(UI),E=W.GetComponentSpaceTransform(EI),H=W.GetComponentSpaceTransform(HI);
+  const FQuat HandRotation=H.GetRotation();const FVector Pole=U.GetLocation()+(E.GetLocation()-U.GetLocation())*2;
+  const FVector Target=H.GetLocation()+Cached.TerracePalmOffsetCS*Cached.TerracePalmWeight;
+  AnimationCore::SolveTwoBoneIK(U,E,H,Pole,Target,false,1.0,1.0);
+  H.SetRotation((FQuat(FVector::UpVector,FMath::DegreesToRadians(Cached.TerracePalmYaw*Cached.TerracePalmWeight))*HandRotation).GetNormalized());
+  FBoneTransform T[]={FBoneTransform(UI,U),FBoneTransform(EI,E),FBoneTransform(HI,H)};W.SafeSetCSBoneTransforms(MakeArrayView(T,3));
+  for(auto BI:{UI,EI,HI})Changed.AddUnique(BI);
+ }
  if(Cached.Additive || Cached.HeadWeight>0 || Cached.EyeWeight>0)for(auto I:Indices)Changed.AddUnique(I);
  if(Cached.Additive)for(auto* R:{&TorsoLower,&TorsoUpper})if(R->IsValidToEvaluate(B))Changed.AddUnique(R->GetCompactPoseIndex(B));
  if(Cached.IdleWeight>0){for(auto& R:IdleBones)if(R.IsValidToEvaluate(B))Changed.AddUnique(R.GetCompactPoseIndex(B));Changed.AddUnique(Indices[1]);}

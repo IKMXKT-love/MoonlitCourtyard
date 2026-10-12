@@ -1,4 +1,5 @@
 #include "CourtyardController.h"
+#include "CourtyardContentLife.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -101,7 +102,13 @@ void ACourtyardController::TickLivelyEnvironment(float Dt)
   const float Fade=Live?EnvEase(A/.6f)*(1-EnvEase((Age-P3GustLength-2)/2)):0;
   P3Petals->UpdateInstanceTransform(N,FTransform(FRotator(20*FMath::Sin(A),A*18+N*27,12),Pos,FVector(.9f*Fade)),true,N==11,true);
  }
- if(P3Glow)P3Glow->SetScalarParameterValue(TEXT("Life"),EnvEase((Now-60)/8));
+ const float FlyLife=EnvEase((Now-60)/8);
+ const bool FixFireflyDisplay=ContentLayer.IsValid() && ContentLayer->FixEnabled;
+ if(P3Glow)P3Glow->SetScalarParameterValue(TEXT("Life"),FlyLife);
+ // The original unlit material is opaque. Zero emission therefore rendered
+ // black spheres during warm-up. Candidate maps suppress that unlit geometry
+ // and ease its tiny footprint in with the existing light envelope.
+ if(FixFireflyDisplay)P3Fireflies->SetVisibility(FlyLife>.003f);
  for(int32 N=0;N<30;++N){const FVector Seed=P3FlySeeds[N];const float T=Now*Seed.Z+Seed.X;FVector Pos=P3FlyCenters[N%P3FlyCenters.Num()]+FVector(FMath::Cos(T)*Seed.Y,FMath::Sin(T*.73f)*Seed.Y*.65f,18*FMath::Sin(T*.55f));
   if(N==0){
 
@@ -117,7 +124,8 @@ void ACourtyardController::TickLivelyEnvironment(float Dt)
    // Continuous bounded travel also covers cancellation and rejoining the moving group.
    P3GuidedFly=FMath::VInterpConstantTo(P3GuidedFly,Pos,Dt,65.f);Pos=P3GuidedFly;
   }
-  P3Fireflies->UpdateInstanceTransform(N,FTransform(FQuat::Identity,Pos,FVector(.0075f+.0015f*FMath::Sin(T*.5f))),true,N==29,true);
+  const float FlyScale=(.0075f+.0015f*FMath::Sin(T*.5f))*(FixFireflyDisplay?FlyLife:1.f);
+  P3Fireflies->UpdateInstanceTransform(N,FTransform(FQuat::Identity,Pos,FVector(FlyScale)),true,N==29,true);
  }
  for(int32 N=0;N<P3LampCenters.Num()*3;++N){const float T=Now*.45f+N*2.1f;const FVector Pos=P3LampCenters[N/3]+FVector(25*FMath::Cos(T),22*FMath::Sin(T),20+12*FMath::Sin(T*.63f));
   for(int32 Side=0;Side<2;++Side){const int32 I=N*2+Side;const float Sign=Side?1:-1;P3Moths->UpdateInstanceTransform(I,FTransform(FRotator(0,T*57,Sign*(15+25*FMath::Sin(Now*12))),Pos+FVector(Sign*.45f,0,0),FVector(.010f,.017f,.0015f)),true,I==P3Moths->GetInstanceCount()-1,true);}

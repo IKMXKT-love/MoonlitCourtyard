@@ -1,4 +1,5 @@
 #include "CourtyardController.h"
+#include "CourtyardContentLife.h"
 #include "HAL/IConsoleManager.h"
 #include "CourtyardHUD.h"
 #include "Camera/CameraComponent.h"
@@ -263,6 +264,7 @@ bool ACourtyardController::MeteorContext()
 }
 bool ACourtyardController::TryAmbientBehavior(int32 Variant)
 {
+    if(ContentLayer.IsValid() && ContentLayer->BlocksOrdinaryBehavior())return false;
     ACharacter* A=Cast<ACharacter>(Emma());
     if(!A || LivingTrip || ActiveAmbient || !ContextMotions.IsValidIndex(Variant) || !A->GetMesh())return false;
     UAnimInstance* Inst=A->GetMesh()->GetAnimInstance();const double Now=GetWorld()->GetTimeSeconds();
@@ -348,7 +350,7 @@ void ACourtyardController::TickAmbientBehavior()
     if(Now-AmbientStillSince<5. || Page!=ECourtyardPage::Game)return;
     auto* C=Cast<ACharacter>(A);auto* Inst=C&&C->GetMesh()?C->GetMesh()->GetAnimInstance():nullptr;
     if(!Inst || Inst->IsAnyMontagePlaying() || ReadNumber(A,TEXT("DueTime"),Now)-Now<9.)return;
-    if(ReviewBodyHold)return;
+    if(ReviewBodyHold || (ContentLayer.IsValid() && ContentLayer->BlocksOrdinaryBehavior()))return;
     if(TryAmbientBehavior(0))return;
     if(TryAmbientBehavior(7))return;
     if(Attention && TryAmbientBehavior(Y>8.f?5:Y< -8.f?6:8))return;
@@ -410,6 +412,7 @@ bool ACourtyardController::CanRespond() const
 {
     if(IsApproachPrototypeWorld())return false;
     if(Page!=ECourtyardPage::Game || PoseTransition || IsSeatBusy())return false;
+    if(ContentLayer.IsValid() && ContentLayer->BlocksPatResponse())return false;
     FVector Eye;FRotator R;GetPlayerViewPoint(Eye,R);FHitResult H;
     FCollisionQueryParams Q(SCENE_QUERY_STAT(CourtyardRespond),false,PlayerCharacter);
     // Exactly the existing input/HUD range and channel, now shared with every new posture.
@@ -448,6 +451,7 @@ void ACourtyardController::Escape()
 }
 bool ACourtyardController::InputKey(const FInputKeyEventArgs& P)
 {
+    if(ContentLayer.IsValid() && ContentLayer->CaptureOnly)return true; // Background observation only; normal preview input is unchanged.
     if(P.Key==EKeys::MouseX || P.Key==EKeys::MouseY)
     {
         if(Page==ECourtyardPage::Game && !PoseTransition && !IsSeatBusy() && !IsLookInputIgnored() && FPlatformTime::Seconds()>DropMouseUntil)
@@ -482,6 +486,7 @@ bool ACourtyardController::InputKey(const FInputKeyEventArgs& P)
     }
     Held.Add(P.Key);
     const int32 Action=Applied.Keys.IndexOfByKey(P.Key);
+    if(Action==INDEX_NONE && ContentLayer.IsValid() && ContentLayer->HandleKey(P.Key))return true;
     if(Action!=INDEX_NONE) HandleAction(Action);
     return true; // Legacy bindings never also receive the physical key.
 }
@@ -497,7 +502,7 @@ void ACourtyardController::HandleAction(int32 A)
 {
     if(A==(int32)ECourtyardAction::Map) {OpenPage(ECourtyardPage::Map);return;}
     if(!PlayerCharacter || PoseTransition || IsSeatBusy()) return;
-    if(A==(int32)ECourtyardAction::Respond) {if(IsApproachPrototypeWorld())return;if(ReplyHighFive())return;if(TryLivelyPat())return;
+    if(A==(int32)ECourtyardAction::Respond) {if(IsApproachPrototypeWorld())return;if(ContentLayer.IsValid() && ContentLayer->BlocksPatResponse())return;if(ReplyHighFive())return;if(TryLivelyPat())return;
         // walking (locomotion rework): E near her asks her to stop; she stays for the pat
         if(LocoOn && LocoState!=ELocoState::Idle && PlayerCharacter && Emma() && FVector::Dist2D(PlayerCharacter->GetActorLocation(),Emma()->GetActorLocation())<320.f){LocoStopRequested=true;LocoPatWantedAt=GetWorld()->GetTimeSeconds();UE_LOG(LogTemp,Display,TEXT("COURTYARD_LIFE pat_while_walking stop_requested"));return;}
         if(CanRespond())ExecutePatResponse();return;}
