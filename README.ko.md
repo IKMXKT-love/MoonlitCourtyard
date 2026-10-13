@@ -6,9 +6,9 @@
 
 푸른 보랏빛 밤하늘 아래 꽃길을 걷고, 따뜻한 방으로 돌아가거나 벚꽃나무 곁에서 사쿠라바 에마와 머물러 보세요. 전투나 퀘스트의 압박 없이 바람, 물소리와 작은 반응을 즐기는 정원입니다.
 
-**[Windows판 무료 다운로드](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.49.1/MoonlitCourtyard-v0.49.1-Windows.zip)** · [버전 안내](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.49.1)
+**[Windows판 무료 다운로드](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.49.2/MoonlitCourtyard-v0.49.2-Windows.zip)** · [버전 안내](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.49.2)
 
-v0.49.1 · Windows 64비트 · 약669 MiB · 무료
+v0.49.2 · Windows 64비트 · 약677 MiB · 무료
 
 ![따뜻한 현관과 스테인드글라스 앞에서 에마가 살며시 미소 짓습니다.](assets/readme/courtyard.webp)
 

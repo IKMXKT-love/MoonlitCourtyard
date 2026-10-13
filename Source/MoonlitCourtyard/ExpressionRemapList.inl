@@ -134,3 +134,6 @@
 {TEXT("/Game/Emma/Animations/WelcomeRestore20261004/A_Emma_Lively_WaveShy_v5"),TEXT("/Game/Emma/Animations/ExpressionRemap20261005/A_Emma_Lively_WaveShy_v5_x1"),TEXT("/Game/Emma/Animations/ExpressionRemap20261005/A_Emma_Lively_WaveShy_v5_x2"),TEXT("")},
 {TEXT("/Game/Emma/Animations/WelcomeRestore20261004/A_Emma_Lively_WelcomeLonely_v5"),TEXT("/Game/Emma/Animations/ExpressionRemap20261005/A_Emma_Lively_WelcomeLonely_v5_x1"),TEXT("/Game/Emma/Animations/ExpressionRemap20261005/A_Emma_Lively_WelcomeLonely_v5_x2"),TEXT("")},
 {TEXT("/Game/Emma/Animations/WelcomeRestore20261004/A_Emma_Lively_WelcomeShy_v5"),TEXT("/Game/Emma/Animations/ExpressionRemap20261005/A_Emma_Lively_WelcomeShy_v5_x1"),TEXT("/Game/Emma/Animations/ExpressionRemap20261005/A_Emma_Lively_WelcomeShy_v5_x2"),TEXT("")},
+
+// C8 blink accepted by user 2026-10-13. Original montage and all scheduling gates are retained.
+{TEXT("/Game/Emma/Animations/Lively20261003/A_Emma_Lively_P3HatShake"),TEXT("/Game/Emma/Animations/C8Blink20261013/A_Emma_Lively_P3HatShake_Blink1"),TEXT(""),TEXT("")},

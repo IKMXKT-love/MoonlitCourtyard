@@ -6,9 +6,9 @@
 
 走進藍紫月夜中的莊園，沿花徑漫步，回到暖燈下休息，也可以坐在花樹旁，靜靜陪伴櫻羽艾瑪。沒有戰鬥或任務催促，只有風、水聲和偶爾發生的小小回應。
 
-**[免費下載 Windows 版](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.49.1/MoonlitCourtyard-v0.49.1-Windows.zip)** · [版本說明](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.49.1)
+**[免費下載 Windows 版](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.49.2/MoonlitCourtyard-v0.49.2-Windows.zip)** · [版本說明](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.49.2)
 
-v0.49.1 · Windows 64位 · 約669 MiB · 完全免費
+v0.49.2 · Windows 64位 · 約677 MiB · 完全免費
 
 ![暖光門廳和彩窗前，艾瑪輕輕微笑。](assets/readme/courtyard.webp)
 

@@ -6,9 +6,9 @@
 
 Enter a manor beneath a blue-violet sky. Wander along flower paths, return to the warmth indoors, or sit beneath the blossoms with Sakuraba Ema. There is no combat or quest pressure—just wind, water, and small moments of companionship.
 
-**[Download for Windows — free](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.49.1/MoonlitCourtyard-v0.49.1-Windows.zip)** · [Release notes](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.49.1)
+**[Download for Windows — free](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.49.2/MoonlitCourtyard-v0.49.2-Windows.zip)** · [Release notes](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.49.2)
 
-v0.49.1 · Windows 64-bit · About 669 MiB · Free
+v0.49.2 · Windows 64-bit · About 677 MiB · Free
 
 ![Ema smiles softly beside the warm entrance and stained-glass windows.](assets/readme/courtyard.webp)
 

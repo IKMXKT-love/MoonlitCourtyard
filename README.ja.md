@@ -6,9 +6,9 @@
 
 青紫の夜空の下、花の小径を歩き、暖かな部屋へ戻り、桜の木のそばで桜羽エマと過ごす。戦闘やクエストに急かされず、風と水の音、ふとした反応を楽しむ庭園体験です。
 
-**[Windows版を無料ダウンロード](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.49.1/MoonlitCourtyard-v0.49.1-Windows.zip)** · [更新内容](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.49.1)
+**[Windows版を無料ダウンロード](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.49.2/MoonlitCourtyard-v0.49.2-Windows.zip)** · [更新内容](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.49.2)
 
-v0.49.1 · Windows 64ビット · 約669 MiB · 完全無料
+v0.49.2 · Windows 64ビット · 約677 MiB · 完全無料
 
 ![暖かな玄関とステンドグラスの前で、エマがそっと微笑む。](assets/readme/courtyard.webp)
 
