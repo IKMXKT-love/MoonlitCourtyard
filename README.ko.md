@@ -6,13 +6,19 @@
 
 푸른 보랏빛 밤하늘 아래 꽃길을 걷고, 따뜻한 방으로 돌아가거나 벚꽃나무 곁에서 사쿠라바 에마와 머물러 보세요. 전투나 퀘스트의 압박 없이 바람, 물소리와 작은 반응을 즐기는 정원입니다.
 
-**[Windows판 무료 다운로드](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.49.3/MoonlitCourtyard-v0.49.3-Windows.zip)** · [버전 안내](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.49.3)
+**[Windows판 무료 다운로드](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.50.0/MoonlitCourtyard-v0.50.0-Windows.zip)** · [버전 안내](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.50.0)
 
-v0.49.3 · Windows 64비트 · 약670 MiB · 무료
+v0.50.0 · Windows 64비트 · 무료
 
-![따뜻한 현관과 스테인드글라스 앞에서 에마가 살며시 미소 짓습니다.](assets/readme/courtyard.webp)
+![달빛 정원에서 에마와 조용한 시간을 보내세요.](assets/readme/courtyard.webp)
 
 현재 게임 UI는 주로 중국어입니다. 아래 이미지는 실제 게임 화면입니다.
+
+## 화단, 등불과 돌길
+
+층을 이룬 화단과 떨어진 꽃잎, 질감 있는 돌길, 길가의 등불을 정돈했습니다. 식물은 바람에 흔들리고 플레이어나 에마가 가까이 다가가면 부드럽게 휘어집니다. 저택 외벽과 스테인드글라스, 달밤 조명도 새롭게 다듬었습니다.
+
+![화단, 등불과 돌길](assets/readme/garden.webp)
 
 ## 꽃그늘에서 따뜻한 창가로
 
@@ -26,9 +32,9 @@ v0.49.3 · Windows 64비트 · 약670 MiB · 무료
 
 지원되는 장소에서 산책, 꽃 감상, 벽난로 앞 손 녹이기, 스테인드글라스 곁 머물기 등을 합니다. 반응은 현재 상황에 따라 달라집니다.
 
-![플레이어가 앉아서도E반응의 미소를 볼 수 있습니다. 에마는 근처에 서 있습니다.](assets/readme/companion.webp)
+![꽃길 옆에 선 에마 뒤로 물가와 별빛이 펼쳐집니다.](assets/readme/companion.webp)
 
-*플레이어가 앉아서도E반응의 미소를 볼 수 있습니다. 에마는 근처에 서 있습니다.*
+*꽃길 옆에 선 에마 뒤로 물가와 별빛이 펼쳐집니다.*
 
 > 가까이 가서 에마를 바라보고 안내를 기다리세요. 이동이나 다른 행동 중에는 일부 반응을 잠시 멈춥니다. 에마의 자율적인 앉기·일어서기는 아직 공개되지 않았습니다.
 
@@ -37,8 +43,8 @@ v0.49.3 · Windows 64비트 · 약670 MiB · 무료
 <table>
 <tr>
 <td width="50%">
-<img src="assets/readme/hearth.webp" alt="벽난로와 차를 마시는 자리가 실내 휴식 공간을 연결합니다." width="100%">
-<p>벽난로와 차를 마시는 자리가 실내 휴식 공간을 연결합니다.</p>
+<img src="assets/readme/hearth.webp" alt="벽난로의 불빛이 실내에 온기를 더합니다." width="100%">
+<p>벽난로의 불빛이 실내에 온기를 더합니다.</p>
 </td>
 <td width="50%">
 <img src="assets/readme/reading.webp" alt="책장과 독서 코너를 탐색할 수 있습니다. 에마가 스스로 앉아 읽는 행동은 아직 미완성입니다." width="100%">

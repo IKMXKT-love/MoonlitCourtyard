@@ -6,13 +6,19 @@
 
 走进一座蓝紫月夜中的庄园，沿花径漫步，回到暖灯下休息，也可以坐在花树旁，静静陪伴樱羽艾玛。没有战斗与任务催促，只有风、水声和偶尔发生的小小回应。
 
-**[免费下载 Windows 版](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.49.3/MoonlitCourtyard-v0.49.3-Windows.zip)** · [版本说明](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.49.3)
+**[免费下载 Windows 版](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.50.0/MoonlitCourtyard-v0.50.0-Windows.zip)** · [版本说明](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.50.0)
 
-v0.49.3 · Windows 64位 · 约670 MiB · 完全免费
+v0.50.0 · Windows 64位 · 完全免费
 
-![暖光门厅和彩窗前，艾玛轻轻微笑。](assets/readme/courtyard.webp)
+![月夜花园里，与艾玛相伴。](assets/readme/courtyard.webp)
 
 游戏界面目前主要为中文。以下图片均为真实游戏实拍。
+
+## 花境、灯笼与石板小径
+
+新版整理了成片花境与落花、石板铺地和路径灯笼，并加入植物随风摆动及靠近时的轻微避让。城堡立面、彩窗和月夜光照也一并更新。
+
+![花境、灯笼与石板小径](assets/readme/garden.webp)
 
 ## 从花影走向暖光
 
@@ -26,9 +32,9 @@ v0.49.3 · Windows 64位 · 约670 MiB · 完全免费
 
 艾玛会在目前支持的区域散步、赏花、靠近壁炉暖手，或在彩窗边停留。她的活动与回应受当前状态约束，给庭院留下安静的节奏。
 
-![玩家坐下后可以看见E回应的微笑；艾玛会站在玩家附近陪伴。](assets/readme/companion.webp)
+![花径旁的艾玛，身后是水景与星空。](assets/readme/companion.webp)
 
-*玩家坐下后可以看见E回应的微笑；艾玛会站在玩家附近陪伴。*
+*花径旁的艾玛，身后是水景与星空。*
 
 > 靠近、面对艾玛，并等待互动提示。她正在移动或完成其他行为时，部分回应会暂时让位。这里的坐下指玩家使用座椅；艾玛自主坐起尚未开放。
 
@@ -37,8 +43,8 @@ v0.49.3 · Windows 64位 · 约670 MiB · 完全免费
 <table>
 <tr>
 <td width="50%">
-<img src="assets/readme/hearth.webp" alt="壁炉、茶座与暖光，连接室内的休憩空间。" width="100%">
-<p>壁炉、茶座与暖光，连接室内的休憩空间。</p>
+<img src="assets/readme/hearth.webp" alt="壁炉中的火光，为室内添一处温暖。" width="100%">
+<p>壁炉中的火光，为室内添一处温暖。</p>
 </td>
 <td width="50%">
 <img src="assets/readme/reading.webp" alt="书架和窗边阅读角可供玩家探索；艾玛自主入座读书仍在完善。" width="100%">

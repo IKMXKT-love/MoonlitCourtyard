@@ -6,13 +6,19 @@
 
 Enter a manor beneath a blue-violet sky. Wander along flower paths, return to the warmth indoors, or sit beneath the blossoms with Sakuraba Ema. There is no combat or quest pressure—just wind, water, and small moments of companionship.
 
-**[Download for Windows — free](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.49.3/MoonlitCourtyard-v0.49.3-Windows.zip)** · [Release notes](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.49.3)
+**[Download for Windows — free](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.50.0/MoonlitCourtyard-v0.50.0-Windows.zip)** · [Release notes](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.50.0)
 
-v0.49.3 · Windows 64-bit · About 670 MiB · Free
+v0.50.0 · Windows 64-bit · Free
 
-![Ema smiles softly beside the warm entrance and stained-glass windows.](assets/readme/courtyard.webp)
+![Spend a quiet moment with Ema in the moonlit garden.](assets/readme/courtyard.webp)
 
 The game interface is currently primarily Chinese. All images below are actual game captures.
+
+## Flower beds, lanterns and stone paths
+
+The updated garden brings together layered flower beds, fallen petals, textured paving and path lanterns. Plants sway in the wind and gently bend as you or Ema approach. The manor facade, stained glass and moonlit lighting have also been refreshed.
+
+![Flower beds, lanterns and stone paths](assets/readme/garden.webp)
 
 ## From blossom shade to warm windows
 
@@ -26,9 +32,9 @@ The flowering tree, water and manor remain connected by open views. Explore the 
 
 Within supported areas, Ema walks, watches flowers, warms her hands near the fireplace and pauses by stained glass. Her responses depend on the current situation.
 
-![See her E-response smile from the player’s seat. Ema stands nearby; she is not seated.](assets/readme/companion.webp)
+![Ema beside the flower path, with water and stars behind her.](assets/readme/companion.webp)
 
-*See her E-response smile from the player’s seat. Ema stands nearby; she is not seated.*
+*Ema beside the flower path, with water and stars behind her.*
 
 > Approach, face Ema and wait for the interaction prompt. Some responses yield while she moves or performs another activity. Autonomous sitting and standing for Ema are not enabled.
 
@@ -37,8 +43,8 @@ Within supported areas, Ema walks, watches flowers, warms her hands near the fir
 <table>
 <tr>
 <td width="50%">
-<img src="assets/readme/hearth.webp" alt="The fireplace and tea seating connect indoor resting spaces." width="100%">
-<p>The fireplace and tea seating connect indoor resting spaces.</p>
+<img src="assets/readme/hearth.webp" alt="A glowing fireplace brings warmth indoors." width="100%">
+<p>A glowing fireplace brings warmth indoors.</p>
 </td>
 <td width="50%">
 <img src="assets/readme/reading.webp" alt="Explore the bookshelves and reading corner. Ema’s autonomous seated reading is still unfinished." width="100%">

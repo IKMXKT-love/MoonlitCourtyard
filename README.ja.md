@@ -6,13 +6,19 @@
 
 青紫の夜空の下、花の小径を歩き、暖かな部屋へ戻り、桜の木のそばで桜羽エマと過ごす。戦闘やクエストに急かされず、風と水の音、ふとした反応を楽しむ庭園体験です。
 
-**[Windows版を無料ダウンロード](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.49.3/MoonlitCourtyard-v0.49.3-Windows.zip)** · [更新内容](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.49.3)
+**[Windows版を無料ダウンロード](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/download/v0.50.0/MoonlitCourtyard-v0.50.0-Windows.zip)** · [更新内容](https://github.com/IKMXKT-love/MoonlitCourtyard/releases/tag/v0.50.0)
 
-v0.49.3 · Windows 64ビット · 約670 MiB · 完全無料
+v0.50.0 · Windows 64ビット · 完全無料
 
-![暖かな玄関とステンドグラスの前で、エマがそっと微笑む。](assets/readme/courtyard.webp)
+![月夜の庭園で、エマと静かなひとときを。](assets/readme/courtyard.webp)
 
 ゲーム内UIは現在主に中国語です。画像は実際のゲーム画面です。
+
+## 花壇、ランタン、石畳の小径
+
+花壇と散った花びら、石畳、道沿いのランタンを整えました。植物は風に揺れ、プレイヤーやエマが近づくと穏やかになびきます。邸宅の外壁、ステンドグラス、月夜の照明も更新しました。
+
+![花壇、ランタン、石畳の小径](assets/readme/garden.webp)
 
 ## 花影から、暖かな窓辺へ
 
@@ -26,9 +32,9 @@ v0.49.3 · Windows 64ビット · 約670 MiB · 完全無料
 
 対応する場所で散歩、花の鑑賞、暖炉で手を温める、ステンドグラスのそばでの滞在などを行います。反応は状況に応じて変化します。
 
-![プレイヤーが座った状態でもEへの笑顔が見えます。エマは近くに立っています。](assets/readme/companion.webp)
+![花の小径に立つエマ。その向こうには水辺と星空。](assets/readme/companion.webp)
 
-*プレイヤーが座った状態でもEへの笑顔が見えます。エマは近くに立っています。*
+*花の小径に立つエマ。その向こうには水辺と星空。*
 
 > 近づいてエマの方を向き、案内を待ってください。移動中や別の行動中は一部の反応を控えます。エマの自律的な着座・起立は未公開です。
 
@@ -37,8 +43,8 @@ v0.49.3 · Windows 64ビット · 約670 MiB · 完全無料
 <table>
 <tr>
 <td width="50%">
-<img src="assets/readme/hearth.webp" alt="暖炉とお茶の席が、室内の休憩空間をつなぎます。" width="100%">
-<p>暖炉とお茶の席が、室内の休憩空間をつなぎます。</p>
+<img src="assets/readme/hearth.webp" alt="暖炉の火が、室内にぬくもりを添えます。" width="100%">
+<p>暖炉の火が、室内にぬくもりを添えます。</p>
 </td>
 <td width="50%">
 <img src="assets/readme/reading.webp" alt="本棚や読書コーナーを探索できます。エマが自分で座って読む行動は未完成です。" width="100%">

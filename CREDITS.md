@@ -14,6 +14,7 @@ This is a free, non-monetized, unofficial fan game featuring Sakuraba Ema from ã
 ## Environment and sound
 
 - Poly Haven models and textures: CC0 1.0, https://polyhaven.com/license . Selected creators include Kirill Sannikov (ArmChair_01, GothicCabinet_01, Sofa_01), Ulan Cabanilla (gothic_coffee_table), Jorge Camacho (Rockingchair_01), Rob Tuytel (marble_01), and Jenelle van Heerden (oak_veneer_01 and plants). Other plant/stone assets are from the same recorded CC0 library. Source-site logos, preview renders and profile imagery are not distributed as game assets.
+- New garden assets in v0.50.0: Poly Haven **Lantern_01** by Rajil Jose Macatangay, **large_grey_tiles** and **forest_leaves_02**, CC0 1.0. Sources: https://polyhaven.com/a/Lantern_01 , https://polyhaven.com/a/large_grey_tiles , https://polyhaven.com/a/forest_leaves_02 .
 - Wind: **wind1**, Luke.RUSTLTD, CC0, https://opengameart.org/content/wind1 .
 - Water: **water waves**, transitking, submitted by qubodup, CC0, https://opengameart.org/content/water-waves .
 - Fireplace: **Fireplace Sound loop**, PagDev, CC0, https://opengameart.org/content/fireplace-sound-loop .
