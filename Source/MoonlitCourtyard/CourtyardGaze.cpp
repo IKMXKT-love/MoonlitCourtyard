@@ -34,6 +34,7 @@ FGazePolicy Policy(FString Name,bool Authored,bool Walking)
   {TEXT("CountStars"),0,0,2},{TEXT("CloudWatch"),0,0,2},{TEXT("P3MothWatch"),0,0,2},{TEXT("Doze"),0,0,2},
   {TEXT("P3Sneeze"),0,0,2},{TEXT("StartleBody"),0,0,2},{TEXT("SmallStartle"),0,0,2},{TEXT("P3Prayer"),0,0,2},{TEXT("P3Firefly"),0,0,2},
   {TEXT("HumHead"),.5f,.5f,3},{TEXT("MusicNod"),.5f,.5f,3},{TEXT("DaydreamHead"),.5f,.5f,3},{TEXT("P3WindFace"),.5f,.5f,3},
+  {TEXT("BookmarkRead_Contact"),0,0,3},
   {TEXT("Depart"),0,1,5}};
  for(const auto& R:Rules)if(Name.StartsWith(R.Prefix))return R;
  return {TEXT(""),.5f,1,4};

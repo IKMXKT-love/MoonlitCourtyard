@@ -355,6 +355,8 @@ private:
     UPROPERTY() TArray<TObjectPtr<class AStaticMeshActor>> LivingProps;
     TWeakObjectPtr<AActor> LivingChime, ChimeAnchor, LivingTree, AncientTree, AncientAnchor, ReadingAnchor, ReadingBook, ReadingBookmark;
     FTransform ChimeRest, BookRest, BookmarkRest;
+    FTransform BookmarkGripLocal, BookmarkPlaced;
+    bool BookmarkPicked=false, BookmarkPlacedDown=false;
     bool LivingInitialized=false, LivingSoundPlayed=false, LivingTrip=false, ReadingReturning=false, ReadingPaused=false;
     bool ReadingOldActivity=true;
     int32 LivingBehavior=INDEX_NONE, LastLiving=INDEX_NONE, ReadingSegment=0, LivingTripPurpose=5;

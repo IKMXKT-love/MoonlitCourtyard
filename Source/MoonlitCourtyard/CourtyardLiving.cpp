@@ -82,6 +82,7 @@ bool ACourtyardController::StartLiving(int32 V,bool Review){
  if(V==1 && (FVector::Dist2D(A->GetActorLocation(),ChimeAnchor->GetActorLocation())>8 || FMath::Abs(FMath::FindDeltaAngleDegrees(A->GetActorRotation().Yaw,ChimeAnchor->GetActorRotation().Yaw))>3))return false;
  if(V==3 && !Review && (!P2PlayerContext(170,Y) || FMath::Abs(Y)>20 || Now-P2GazeSince<2 || P2GazeSince<0 || FVector::Dist2D(A->GetActorLocation(),PlayerCharacter->GetActorLocation())>150))return false;
  if(V==5 && (FVector::Dist2D(A->GetActorLocation(),ReadingAnchor->GetActorLocation())>12 || FMath::Abs(FMath::FindDeltaAngleDegrees(A->GetActorRotation().Yaw,ReadingAnchor->GetActorRotation().Yaw))>3))return false;
+
  if(V==2){
   const FVector Head=M->GetSocketLocation(TEXT("頭"));const FVector Target=Head+A->GetActorForwardVector()*350+FVector(0,0,650);
   if(!VisibleTarget(Target))return false;
@@ -95,6 +96,7 @@ bool ACourtyardController::StartLiving(int32 V,bool Review){
  if(LivelyStage>=2 && V==3){LivingMotions[3]=LivelyMotion(TEXT("HighFiveInvite"),LivingMotions[3]);LivingMotions[6]=LivelyMotion(TEXT("HighFiveResponse"),LivingMotions[6]);}
  if(!LivingMotions.IsValidIndex(V) || !LivingMotions[V] || I->Montage_Play(LivingMotions[V],1,EMontagePlayReturnType::MontageLength,0,false)<=0)return false;
  LivingBool(A,TEXT("AllowInteraction"),false);LivingBehavior=V;LivingStarted=Now;LivingSoundPlayed=false;
+ if(V==5){BookmarkPicked=false;BookmarkPlacedDown=false;if(ReadingBookmark.IsValid())ReadingBookmark->SetActorTransform(BookmarkRest);}
  ActiveAmbient=LivingMotions[V];AmbientActor=A;AmbientBehavior=100+V;LastLiving=V;
  LivelyLivingBegan(V);if(V==3 && LivelyStage>=2)LivelyStarted(TEXT("B10"),TEXT("high_five_invite"),true);
  LivingCooldown[V]=Now+FMath::FRandRange(180.f,300.f);
@@ -158,16 +160,30 @@ void ACourtyardController::TickLiving(float Dt){
    const float U=FMath::Max(0.f,T-2.85f);FRotator R=ChimeRest.Rotator();R.Roll+=U>0?FMath::Sin(U*6)*5*FMath::Exp(-U*.8f):0;LivingChime->SetActorRotation(R);
   }
   if(V==5 && ReadingBookmark.IsValid()){
-   const FVector Finger=M->GetSocketLocation(TEXT("人指３_R"));
-   float Grip=Soft((T-2.4f)/.6f)*(1-Soft((T-11.8f)/1.1f));
-   ReadingBookmark->SetActorLocation(FMath::Lerp(BookmarkRest.GetLocation(),Finger+FVector(0,0,.4),Grip));
+   if(LivingMotions[V]->GetName().Contains(TEXT("BookmarkRead_Contact"))){
+    // A prop remains on the page until the actual grasp, then follows the
+    // captured grip frame. Release leaves it exactly where it was put down.
+    const FTransform Finger=M->GetSocketTransform(TEXT("人指３_R"));
+    if(T>=2.6f && !BookmarkPicked){
+     BookmarkGripLocal=ReadingBookmark->GetActorTransform().GetRelativeTransform(Finger);BookmarkPicked=true;
+     UE_LOG(LogTemp,Display,TEXT("COURTYARD_READING grasp t=%.3f finger=%s bookmark=%s"),T,*Finger.GetLocation().ToString(),*ReadingBookmark->GetActorLocation().ToString());
+    }
+    if(BookmarkPicked && !BookmarkPlacedDown){
+     ReadingBookmark->SetActorTransform(BookmarkGripLocal*Finger);
+     if(T>=5.15f){BookmarkPlaced=ReadingBookmark->GetActorTransform();BookmarkPlacedDown=true;UE_LOG(LogTemp,Display,TEXT("COURTYARD_READING release t=%.3f bookmark=%s"),T,*BookmarkPlaced.GetLocation().ToString());}
+    }
+   }else{
+    const FVector Finger=M->GetSocketLocation(TEXT("人指３_R"));
+    const float Grip=Soft((T-2.4f)/.6f)*(1-Soft((T-11.8f)/1.1f));
+    ReadingBookmark->SetActorLocation(FMath::Lerp(BookmarkRest.GetLocation(),Finger+FVector(0,0,.4),Grip));
+   }
   }
   if(Now-LivingStarted>.5 && !I->Montage_IsActive(LivingMotions[V])){
    UE_LOG(LogTemp,Display,TEXT("COURTYARD_LIVING end id=%d t=%.2f"),V,Now);
    LivingBehavior=INDEX_NONE;NextLiving=Now+FMath::FRandRange(50.f,95.f);
    for(auto P:LivingProps)P->SetActorHiddenInGame(true);
    if(LivingChime.IsValid())LivingChime->SetActorTransform(ChimeRest);
-   if(ReadingBookmark.IsValid())ReadingBookmark->SetActorTransform(BookmarkRest);
+   if(ReadingBookmark.IsValid() && !(V==5 && BookmarkPlacedDown))ReadingBookmark->SetActorTransform(BookmarkRest);
    if(V==LivingTripPurpose && LivingTrip){ReadingReturning=true;ReadingChain=StationChain(LivingTripPurpose,true);ReadingSegment=0;ReadingPhase=0;ReadingCurrent=nullptr;ReadingDue=Now+FMath::FRandRange(7.f,13.f);}
   }
   return;
@@ -349,6 +365,18 @@ void ACourtyardController::CourtyardReviewLifeSchedule(){
 void ACourtyardController::CourtyardReviewLivingPlace(int32 Point){
  if(!FParse::Param(FCommandLine::Get(),TEXT("CourtyardReview")) || LivingTrip || LivingBehavior>=0 || ActiveAmbient)return;
  InitializeLiving();auto* A=Cast<ACharacter>(Emma());if(!A || A->GetMesh()->GetAnimInstance()->IsAnyMontagePlaying())return;
+ if(Point==4 && PlayerCharacter){
+  // Observer setup only; Emma and the station stay untouched. Check a real
+  // standing capsule before positioning the review player beside the lectern.
+  const FVector Observer=A->GetActorLocation()+A->GetActorForwardVector()*100-A->GetActorRightVector()*45;
+  const auto* Capsule=PlayerCharacter->GetCapsuleComponent();FCollisionQueryParams Q(SCENE_QUERY_STAT(ReadingObserver),false,A);Q.AddIgnoredActor(PlayerCharacter);
+  if(GetWorld()->OverlapBlockingTestByProfile(Observer,FQuat::Identity,TEXT("Pawn"),FCollisionShape::MakeCapsule(Capsule->GetScaledCapsuleRadius(),Capsule->GetScaledCapsuleHalfHeight()-1),Q)){
+   UE_LOG(LogTemp,Display,TEXT("COURTYARD_READING observer_rejected collision"));return;
+  }
+  PlayerCharacter->SetActorLocation(Observer,false,nullptr,ETeleportType::TeleportPhysics);SetViewTargetWithBlend(GetPawn(),0);
+  FVector Eye;FRotator R;GetPlayerViewPoint(Eye,R);SetControlRotation((A->GetMesh()->GetSocketLocation(TEXT("頭"))-Eye).Rotation());
+  UE_LOG(LogTemp,Display,TEXT("COURTYARD_READING observer_setup npc_unchanged=1 pos=%s"),*Observer.ToString());return;
+ }
  FVector P(-195,0,82.4);float Y=105;
  if(Point==1){P=FVector(-113.75,-182.31,82.4);Y=-74.9859;}
  if(Point==2 && ReadingAnchor.IsValid()){P=ReadingAnchor->GetActorLocation();Y=ReadingAnchor->GetActorRotation().Yaw;}

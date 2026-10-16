@@ -46,6 +46,7 @@ void ACourtyardController::CourtyardReviewBodyView(int32 Angle){
     if(Angle==3)Delta=F*150+R*145;
     if(Angle==4){Delta=F*170+R*230;Focus.Z-=37;}
     if(Angle==5){Focus=M->GetSocketLocation(TEXT("手首_R"));Delta=F*65+R*38;}
+    if(Angle==6){Focus=M->GetComponentLocation()+FVector(0,0,76);Delta=F*265-R*130;}
     FVector Pos=Focus+Delta+FVector(0,0,7);
     if(!BodyReviewCamera)BodyReviewCamera=GetWorld()->SpawnActor<ACameraActor>();
     if(!BodyReviewCamera)return;

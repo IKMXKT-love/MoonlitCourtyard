@@ -67,7 +67,8 @@ ACourtyardController::ACourtyardController()
         ConstructorHelpers::FObjectFinder<UAnimMontage> Asset(*Path);BodyMotions.Add(Asset.Object);}
     for(const TCHAR* N:{TEXT("CatchPetal"),TEXT("Chime"),TEXT("TraceStars"),TEXT("HighFive"),TEXT("BlowFeather"),TEXT("BookmarkRead"),TEXT("HighFiveReply")}) {
         const FString Suffix=(FString(N)==TEXT("CatchPetal") || FString(N)==TEXT("BlowFeather"))?TEXT("_Contact2"):(FString(N)==TEXT("BookmarkRead") || FString(N)==TEXT("Chime") || FString(N)==TEXT("TraceStars"))?TEXT("_Station2"):TEXT("_Candidate1");
-        ConstructorHelpers::FObjectFinder<UAnimMontage> Asset(*(FString(TEXT("/Game/Emma/Animations/LivingSix20261001/AM_Emma_"))+N+Suffix));LivingMotions.Add(Asset.Object);
+        const FString Path=FString(N)==TEXT("BookmarkRead")?TEXT("/Game/Emma/Animations/LIV5Repair20261013/AM_Emma_BookmarkRead_Contact6"):(FString(TEXT("/Game/Emma/Animations/LivingSix20261001/AM_Emma_"))+N+Suffix);
+        ConstructorHelpers::FObjectFinder<UAnimMontage> Asset(*Path);LivingMotions.Add(Asset.Object);
     }
     for(const TCHAR* N:{TEXT("Petal"),TEXT("Feather"),TEXT("Book"),TEXT("Bookmark")}){ConstructorHelpers::FObjectFinder<UStaticMesh> Asset(*(FString(TEXT("/Game/Environment/LivingSix20261001/SM_Living"))+N));LivingMeshes.Add(Asset.Object);}
     for(int32 N=0;N<3;++N){ConstructorHelpers::FObjectFinder<USoundBase> Asset(*FString::Printf(TEXT("/Game/Environment/LivingSix20261001/S_Chime%d"),N));ChimeSounds.Add(Asset.Object);}
@@ -80,7 +81,8 @@ ACourtyardController::ACourtyardController()
     {ConstructorHelpers::FObjectFinder<UAnimMontage> Asset(TEXT("/Game/Emma/Animations/Welcome20261003/AM_Emma_WelcomeTurnWave3"));WelcomeMotion=Asset.Object;}
     for(const TCHAR* N:{TEXT("Face"),TEXT("Face_NoneEdge"),TEXT("Face_Eyelid"),TEXT("Face_Tere")}){ConstructorHelpers::FObjectFinder<UMaterialInterface> Asset(*(FString(TEXT("/Game/Environment/Welcome20261003/FaceShading/M_WelcomeFace_"))+N));FaceShadingMaterials.Add(Asset.Object);}
     for(const TCHAR* N:{TEXT("WelcomeLonely"),TEXT("WelcomeShy"),TEXT("Reunion"),TEXT("WaveHappy"),TEXT("WaveLonely"),TEXT("WaveShy"),TEXT("ClapJump"),TEXT("StretchMood"),TEXT("YawnMood"),TEXT("FlowerCenterMood"),TEXT("FlowerLeftMood"),TEXT("FlowerRightMood"),TEXT("PetalSuccess"),TEXT("ChimeStartled")}){
-        ConstructorHelpers::FObjectFinder<UAnimMontage> Asset(*(FString(TEXT("/Game/Emma/Animations/Lively20261003/AM_Emma_Lively_"))+N));LivelyMotions.Add(N,Asset.Object);
+        const FString MotionPath=FString(N)==TEXT("ClapJump")?TEXT("/Game/Emma/Animations/B5Repair20261015/AM_Emma_B5_Release2"):(FString(TEXT("/Game/Emma/Animations/Lively20261003/AM_Emma_Lively_"))+N);
+        ConstructorHelpers::FObjectFinder<UAnimMontage> Asset(*MotionPath);LivelyMotions.Add(N,Asset.Object);
     }
     for(const TCHAR* N:{TEXT("Happy"),TEXT("Shy"),TEXT("Lonely"),TEXT("Protest")}){
         ConstructorHelpers::FObjectFinder<UAnimSequence> Asset(*(FString(TEXT("/Game/Emma/Animations/Lively20261003/A_Emma_Lively_Response"))+N));LivelyResponses.Add(N,Asset.Object);
